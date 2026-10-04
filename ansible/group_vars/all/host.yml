@@ -1,0 +1,23 @@
+---
+# Host-side tools. Most work happens inside the Arch box, but several roles
+# run tools on the HOST (extracting .rar/.7z archives, applying patches,
+# unpacking Windows installers), and the defaults assume an Arch host. On a
+# Debian/Ubuntu or Arch host, check_host installs whatever is missing with the
+# host package manager (needs -K the first time); elsewhere it warns. See
+# docs/rebuild-runbook.md "Non-Arch hosts".
+dg_host_tools_install: true
+
+dg_host_tools:
+  - { cmd: bsdtar, apt: libarchive-tools, pacman: libarchive }
+  - { cmd: 7z, apt: 7zip, pacman: 7zip }
+  - { cmd: unrar, apt: unrar, pacman: unrar }
+  - { cmd: xdelta3, apt: xdelta3, pacman: xdelta3 }
+  - { cmd: innoextract, apt: innoextract, pacman: innoextract }
+  - { cmd: cabextract, apt: cabextract, pacman: cabextract }
+
+# Extra host tools for running gamescope on the host (games whose in-box
+# gamescope can't start; see install_sorr). flatpak provides the session
+# helper that distrobox-host-exec needs to reach the host from the box.
+dg_host_gamescope_tools:
+  - { cmd: gamescope, apt: gamescope, pacman: gamescope }
+  - { cmd: flatpak, apt: flatpak, pacman: flatpak }

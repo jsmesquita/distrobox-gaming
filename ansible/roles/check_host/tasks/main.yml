@@ -38,6 +38,11 @@
 # entering the existing one. This bit us 2026-08-25: a host containerd/docker
 # upgrade restarted the runtime and the (empty) docker group blocked access.
 # Group membership is a host-sudo action we can't automate; fail with guidance.
+- name: Ensure host-side tools used by the roles are installed
+  ansible.builtin.include_tasks: host-tools.yml
+  vars:
+    host_tools: "{{ dg_host_tools }}"
+
 - name: Probe container-runtime access (distrobox list)
   ansible.builtin.shell: "distrobox list 2>&1 || true"
   register: _dg_runtime_probe

@@ -1,0 +1,54 @@
+---
+# Ensure a list of host commands exists, installing the missing ones with the
+# host package manager on Debian/Ubuntu and Arch hosts. Called by check_host
+# with dg_host_tools, and by roles with extra needs, e.g.:
+#
+#   ansible.builtin.include_role:
+#     name: check_host
+#     tasks_from: host-tools.yml
+#   vars:
+#     host_tools: "{{ dg_host_gamescope_tools }}"
+#
+# /usr/games is added to PATH so Ubuntu's gamescope counts as present.
+
+- name: Probe host commands
+  ansible.builtin.shell: "command -v {{ item.cmd | quote }}"
+  args:
+    executable: /bin/sh
+  environment:
+    PATH: "{{ lookup('env', 'PATH') }}:/usr/games"
+  loop: "{{ host_tools }}"
+  loop_control:
+    label: "{{ item.cmd }}"
+  register: _host_tool_probe
+  changed_when: false
+  failed_when: false
+
+- name: Collect missing host tools
+  ansible.builtin.set_fact:
+    _host_tools_missing: >-
+      {{ _host_tool_probe.results | rejectattr('rc', 'equalto', 0)
+         | map(attribute='item') | list }}
+    _host_pkg_key: >-
+      {{ 'apt' if ansible_facts.os_family == 'Debian'
+         else ('pacman' if ansible_facts.os_family == 'Archlinux' else '') }}
+
+- name: Install missing host tools
+  become: true
+  ansible.builtin.package:
+    name: "{{ _host_tools_missing | map(attribute=_host_pkg_key) | list }}"
+    state: present
+  when:
+    - _host_tools_missing | length > 0
+    - dg_host_tools_install | bool
+    - _host_pkg_key | length > 0
+
+- name: Warn about host tools that could not be installed automatically
+  ansible.builtin.debug:
+    msg: >-
+      WARNING: missing host commands {{ _host_tools_missing | map(attribute='cmd') | list }}.
+      Install them with your package manager (see docs/rebuild-runbook.md
+      "Non-Arch hosts").
+  when:
+    - _host_tools_missing | length > 0
+    - not (dg_host_tools_install | bool) or _host_pkg_key | length == 0
