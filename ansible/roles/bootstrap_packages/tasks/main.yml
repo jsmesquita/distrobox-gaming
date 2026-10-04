@@ -179,12 +179,32 @@
           cache="{{ dg_nvidia_lib32_cache_dir }}"
           extract="{{ dg_nvidia_lib32_extract_dir }}"
           mkdir -p "$cache" "$extract"
-          if [ ! -f "$cache/$pkg" ]; then
-            curl -fL -o "$cache/$pkg" "{{ dg_nvidia_lib32_archive_base_url }}/$pkg"
+          run="NVIDIA-Linux-x86_64-${ver}.run"
+          # Arch only archives the driver versions it shipped; a host on
+          # another distro (e.g. Ubuntu 580.178.04) falls back to the 32/
+          # libs inside the official NVIDIA .run installer.
+          if [ ! -f "$cache/$pkg" ] && [ ! -f "$cache/$run" ]; then
+            if curl -fL -o "$cache/$pkg.part" "{{ dg_nvidia_lib32_archive_base_url }}/$pkg"; then
+              mv "$cache/$pkg.part" "$cache/$pkg"
+            else
+              rm -f "$cache/$pkg.part"
+              curl -fL -o "$cache/$run.part" "{{ dg_nvidia_run_base_url }}/${ver}/$run"
+              mv "$cache/$run.part" "$cache/$run"
+            fi
           fi
           rm -rf "$extract.tmp"
           mkdir -p "$extract.tmp"
-          tar -xf "$cache/$pkg" -C "$extract.tmp"
+          if [ -f "$cache/$pkg" ]; then
+            tar -xf "$cache/$pkg" -C "$extract.tmp"
+          else
+            sh "$cache/$run" --extract-only --target "$extract.tmp/run" >/dev/null
+            mkdir -p "$extract.tmp/usr/lib32"
+            # NVIDIA libs only; the bundled glvnd copies stay with lib32-libglvnd.
+            cp -a "$extract.tmp/run/32/"lib*nvidia* "$extract.tmp/run/32/"libcuda* \
+              "$extract.tmp/run/32/"libnvcuvid* "$extract.tmp/usr/lib32/"
+            rm -rf "$extract.tmp/run"
+            ldconfig -n "$extract.tmp/usr/lib32"
+          fi
           if ! file "$extract.tmp/usr/lib32/libGLX_nvidia.so.${ver}" | grep -q "ELF 32-bit"; then
             printf "%s\n" "ERROR: extracted libGLX_nvidia.so.${ver} is not 32-bit" >&2
             exit 1
