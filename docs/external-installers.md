@@ -25,7 +25,7 @@ the upstream release is deleted.
 | Starship (Star Fox 64) | HarbourMasters/Starship releases | `install_starship` |
 | MGSM2Fix, MGSHDFix, MGS2/MGS3 Bugfix Compilations | github.com/nuggslet + ShizCalev releases | `metal_gear_master_collection` |
 | Eden Cheats Manager | github.com/ChrisA95G/eden-cheats-manager releases | `install_eden_cheats_manager` |
-| lib32-nvidia-utils (32-bit driver extract) | archive.archlinux.org (version-matched to host driver) | `bootstrap_packages` / `dg_nvidia_lib32_*` |
+| lib32-nvidia-utils (32-bit driver extract) | archive.archlinux.org (version-matched to host driver); falls back to the official `NVIDIA-Linux-x86_64-<ver>.run` from download.nvidia.com for versions Arch never shipped | `bootstrap_packages` / `dg_nvidia_lib32_*`, `dg_nvidia_run_base_url` |
 | Wine 9.19 (CMR experiments) | archive.archlinux.org | `install_pc_racing` |
 | Streets of Rage Remake v5.2 rev550 (SorR.exe under Wine) | Internet Archive mirror `sorrv-52-rev-550_202401/SORRv52_rev550.rar` (sha1-pinned; the official MEGA link isn't checksummable, and the AUR pkg is only v5.1) | `install_sorr` / `dg_sorr_*` |
 | Streets of Rage 4: REIGNITED gameplay mod (modded `bigfile`) | gitlab.com/fuzzyetdeadly/sor4-reignited (`assets/SOR4-Reignited-v1.0.0.zip`, sha256-pinned). Replaces `Streets of Rage 4/data/bigfile`; keeps a `bigfile.vanilla-backup`; needs the game's v8 patch | `install_sor4_reignited` / `dg_sor4_reignited_*` |

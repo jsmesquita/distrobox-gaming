@@ -72,7 +72,11 @@ DxvkInstance::createInstance: Failed to create Vulkan instance
 ```
 
 The `bootstrap_packages` role keeps the dependency-safe dummy package above,
-but also extracts the matching archived `lib32-nvidia-utils` package into:
+but also extracts the matching archived `lib32-nvidia-utils` package (or,
+when Arch never shipped the host's driver version, e.g. Ubuntu's 580.178.04,
+the NVIDIA libs from the `32/` directory of the official
+`NVIDIA-Linux-x86_64-<ver>.run` installer at `dg_nvidia_run_base_url`; the
+bundled glvnd copies are skipped) into:
 
 ```text
 {{ dg_nvidia_lib32_extract_dir }}/usr/lib32
