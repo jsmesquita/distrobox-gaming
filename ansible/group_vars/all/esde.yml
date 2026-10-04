@@ -17,6 +17,11 @@ dg_esde_arcade_clone_systems:
   - model2
   - model3
 
+# Native ports / fan games (opt-in game roles): one launcher script per
+# game, written by configure_esde's port.yml. Kept in the box home, not the
+# ROM library, since these are generated files. See docs/esde-ports.md.
+dg_esde_ports_dir: "{{ dg_box_home }}/ES-DE/ports"
+
 dg_esde_systems:
   - name: switch
     fullname: Nintendo Switch
@@ -505,3 +510,14 @@ dg_esde_systems:
       - { label: "OpenBOR (Standalone)", cmd: "{{ dg_box_home }}/bin/openbor %ROM%" }
     platform: openbor
     theme: openbor
+
+  # Native ports / fan games registered by the opt-in roles (SORR, ProjectR,
+  # ...): each .sh just execs the game's own box launcher.
+  - name: ports
+    fullname: Ports
+    path: "{{ dg_esde_ports_dir }}"
+    extension: ".sh .SH"
+    commands:
+      - { label: "Port launcher", cmd: "bash %ROM%" }
+    platform: ports
+    theme: ports

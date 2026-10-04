@@ -1,0 +1,38 @@
+---
+# Register (or remove) one native port / fan game in the ES-DE "ports"
+# system. Opt-in game roles call this after deploying their box launcher:
+#
+#   - name: Register <game> in ES-DE Ports
+#     ansible.builtin.include_role:
+#       name: configure_esde
+#       tasks_from: port.yml
+#     vars:
+#       esde_port_name: "Streets of Rage Remake"   # shown in ES-DE
+#       esde_port_cmd: "{{ dg_sorr_bin }}"         # launcher inside the box
+#       esde_port_state: present                    # absent on revert
+#
+# The script runs inside the box (ES-DE does), so it execs the launcher
+# directly rather than through distrobox-enter.
+
+- name: Ensure the ES-DE ports directory exists
+  ansible.builtin.file:
+    path: "{{ dg_esde_ports_dir }}"
+    state: directory
+    mode: "0755"
+  when: esde_port_state | default('present') == 'present'
+
+- name: Write the ES-DE port launcher for {{ esde_port_name }}
+  ansible.builtin.copy:
+    dest: "{{ dg_esde_ports_dir }}/{{ esde_port_name }}.sh"
+    mode: "0755"
+    content: |
+      #!/bin/sh
+      # Managed by Ansible (configure_esde/port.yml) - ES-DE Ports entry.
+      exec "{{ esde_port_cmd }}" "$@"
+  when: esde_port_state | default('present') == 'present'
+
+- name: Remove the ES-DE port launcher for {{ esde_port_name }}
+  ansible.builtin.file:
+    path: "{{ dg_esde_ports_dir }}/{{ esde_port_name }}.sh"
+    state: absent
+  when: esde_port_state | default('present') == 'absent'

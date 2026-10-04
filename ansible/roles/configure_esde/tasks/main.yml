@@ -5,6 +5,12 @@
     state: directory
     mode: "0755"
 
+- name: Create ES-DE ports directory
+  ansible.builtin.file:
+    path: "{{ dg_esde_ports_dir }}"
+    state: directory
+    mode: "0755"
+
 - name: Deploy ES-DE custom systems XML
   ansible.builtin.template:
     src: es_systems.xml.j2

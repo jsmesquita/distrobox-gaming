@@ -13,6 +13,13 @@
       loop:
         - "{{ dg_projectr_launcher }}"
         - "{{ dg_projectr_install_dir }}"
+    - name: Remove ProjectR from the ES-DE Ports system
+      ansible.builtin.include_role:
+        name: configure_esde
+        tasks_from: port.yml
+      vars:
+        esde_port_name: "ProjectR - SF Rush"
+        esde_port_state: absent
     - name: Report reverted
       ansible.builtin.debug:
         msg: "ProjectR removed. The NAS AppImage + assets are kept at {{ dg_projectr_root }}."
@@ -104,6 +111,14 @@
         DG_HOST_APPLICATIONS_DIR: "{{ dg_host_applications_dir }}"
       register: _projectr_host
       changed_when: "'installed ' in _projectr_host.stdout or 'removed stale ' in _projectr_host.stdout"
+
+    - name: Register ProjectR in the ES-DE Ports system
+      ansible.builtin.include_role:
+        name: configure_esde
+        tasks_from: port.yml
+      vars:
+        esde_port_name: "ProjectR - SF Rush"
+        esde_port_cmd: "{{ dg_projectr_launcher }}"
 
     - name: Report
       ansible.builtin.debug:

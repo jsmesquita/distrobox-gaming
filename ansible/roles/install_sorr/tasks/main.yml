@@ -175,6 +175,14 @@
     'installed ' in _sorr_host_launchers.stdout or
     'removed stale ' in _sorr_host_launchers.stdout
 
+- name: Register SORR in the ES-DE Ports system
+  ansible.builtin.include_role:
+    name: configure_esde
+    tasks_from: port.yml
+  vars:
+    esde_port_name: "Streets of Rage Remake"
+    esde_port_cmd: "{{ dg_box_home }}/bin/sorr-launch"
+
 - name: Report SORR setup
   ansible.builtin.debug:
     msg: >-

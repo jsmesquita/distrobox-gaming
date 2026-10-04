@@ -61,7 +61,7 @@ There is no unit test suite. The `verify` role is the validation step — run it
 - **`ansible/roles/`** — One role per phase. Each is idempotent. Key roles:
   - `seed_configs` — Subtask files per emulator (`dolphin.yml`, `pcsx2.yml`, etc.). Uses `community.general.ini_file` for INI manipulation, `ansible.builtin.template` for xemu TOML.
   - `desktop_apps` — Jinja2 `.desktop.j2` templates rendered to `config/desktop/rendered/`, symlinked to `~/.local/share/applications/`.
-  - `configure_esde` — `es_systems.xml.j2` loops over `dg_esde_systems` list. Adding systems is a YAML data change.
+  - `configure_esde` — `es_systems.xml.j2` loops over `dg_esde_systems` list. Adding systems is a YAML data change. Standalone games (fan games, ports) register in the ES-DE **Ports** system by including `configure_esde`'s `port.yml` from their role (see `docs/esde-ports.md`); do this for any new opt-in game role that deploys a launcher.
   - `refresh_shadps4` — Fetches releases via `ansible.builtin.uri` against GitHub API, downloads/extracts AppImages, deploys wrapper scripts.
 - Tasks run on `localhost` targeting the bind-mounted box home at `dg_box_home`. Commands that must execute inside the container use `shell: "{{ dg_in_box }} ..."`.
 - Override defaults by creating `ansible/host_vars/localhost.yml` (see `.example`).
