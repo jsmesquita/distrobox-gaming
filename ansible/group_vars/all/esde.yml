@@ -519,5 +519,6 @@ dg_esde_systems:
     extension: ".sh .SH"
     commands:
       - { label: "Port launcher", cmd: "bash %ROM%" }
-    platform: ports
+    # Same scraper platforms as ES-DE's stock ports system ("ports" is not one).
+    platform: "pc, pcwindows"
     theme: ports
