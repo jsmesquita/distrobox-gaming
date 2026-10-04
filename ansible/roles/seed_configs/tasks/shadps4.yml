@@ -86,6 +86,16 @@
       overwritten when the GUI writes its config back on shutdown.
   when: _shadps4_processes.rc == 0
 
+- name: Find existing shadPS4 config.toml files
+  # shadPS4 writes config.toml on its first launch, so a fresh box has
+  # none yet; only sync the files that exist.
+  ansible.builtin.stat:
+    path: "{{ item }}"
+  loop:
+    - "{{ dg_box_home }}/.config/shadPS4/config.toml"
+    - "{{ dg_box_home }}/.local/share/shadPS4/config.toml"
+  register: _shadps4_config_toml
+
 - name: Configure shadPS4 addonInstallDir in both config.toml files
   # shadPS4 keeps two parallel config files — one under .config/ (XDG
   # standard, written by Qt) and one under .local/share/ (used by the
@@ -99,8 +109,6 @@
     backup: true
     create: false
     no_extra_spaces: false
-  loop:
-    - "{{ dg_box_home }}/.config/shadPS4/config.toml"
-    - "{{ dg_box_home }}/.local/share/shadPS4/config.toml"
+  loop: "{{ _shadps4_config_toml.results | selectattr('stat.exists') | map(attribute='item') | list }}"
   loop_control:
     label: "{{ item }}"
