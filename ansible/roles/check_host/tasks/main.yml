@@ -1,4 +1,23 @@
 ---
+# Ubuntu (24.10+) ships sudo-rs as the default `sudo`, and Ansible can't detect
+# its password prompt: every become task times out ("Timed out waiting for
+# become success or become password prompt"). The classic binary is still
+# installed as sudo.ws, so use it for this run unless the user chose a become
+# executable themselves.
+- name: Detect sudo-rs as the host sudo
+  ansible.builtin.shell: "sudo --version 2>/dev/null | head -n1; command -v sudo.ws || true"
+  register: _dg_sudo_probe
+  changed_when: false
+  when: ansible_become_exe is not defined
+
+- name: Use the classic sudo binary (sudo.ws) instead of sudo-rs for become
+  ansible.builtin.set_fact:
+    ansible_become_exe: sudo.ws
+  when:
+    - ansible_become_exe is not defined
+    - "'sudo-rs' in _dg_sudo_probe.stdout"
+    - "'sudo.ws' in _dg_sudo_probe.stdout"
+
 - name: Verify required host commands
   ansible.builtin.command: "which {{ item }}"
   loop:
