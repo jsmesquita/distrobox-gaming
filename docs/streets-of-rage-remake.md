@@ -50,23 +50,25 @@ true fullscreen:
 On some hosts gamescope can't start **inside** the rootless box: on Ubuntu +
 podman the box sees `/tmp/.X11-unix` owned by `nobody`, so gamescope fails
 with `Failed to create Xwayland server`. The Wine virtual-desktop fallback
-showed only a blue desktop there. Instead, run gamescope on the **host**:
+showed only a blue desktop there. Instead, the launcher runs gamescope on the
+**host**.
+
+This is automatic: with `dg_sorr_host_gamescope: auto` (the default) the role
+checks the owner of the box's `/tmp/.X11-unix` and switches to host mode when
+it isn't root or the box user. It then installs `gamescope` and `flatpak` on
+the host (`dg_host_gamescope_tools`). Set it to `true` / `false` to force a
+mode, and size the session to your panel:
 
 ```yaml
 # ansible/host_vars/localhost.yml
-dg_sorr_use_gamescope: false
-dg_sorr_desktop_res: ""
-dg_sorr_host_gamescope: true
 dg_sorr_host_gamescope_opts: "-W 1920 -H 1080 -S integer -f"
 ```
 
-Requirements: `gamescope` installed on the host, and, for ES-DE (which runs
-inside the box), a working `distrobox-host-exec`, which needs the host's
-flatpak session helper (`apt install flatpak`). The launcher re-enters itself
-inside the host gamescope session. The desktop entry then starts the launcher
-on the host directly, while ES-DE goes through `distrobox-host-exec`. If the
-host can't be reached the launcher prints a note and starts plain-windowed in
-the box.
+In host mode the launcher re-enters itself inside the host gamescope session.
+The desktop entry starts the launcher on the host directly, while ES-DE (which
+runs inside the box) goes through `distrobox-host-exec`, which needs the
+host's flatpak session helper. If the host can't be reached the launcher
+prints a note and starts plain-windowed in the box.
 
 ## Saves / controls
 - Saves + video/config live in `tools/sorr/game/savegame/` (persistent work

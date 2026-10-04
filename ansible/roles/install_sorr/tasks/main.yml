@@ -24,6 +24,30 @@
   register: _sorr_pacman
   changed_when: "'installing' in _sorr_pacman.stdout"
 
+# In-box gamescope refuses to start Xwayland when /tmp/.X11-unix isn't owned
+# by root or the user; rootless podman on e.g. Ubuntu shows it as nobody.
+- name: Probe the box's X11 socket dir owner (can in-box gamescope run?)
+  ansible.builtin.shell: "{{ dg_in_box }} stat -c %u /tmp/.X11-unix"
+  register: _sorr_x11_owner
+  changed_when: false
+  failed_when: false
+  when: dg_sorr_host_gamescope | string | lower == 'auto'
+
+- name: Decide whether SORR runs gamescope on the host
+  ansible.builtin.set_fact:
+    _sorr_host_gamescope: >-
+      {{ (_sorr_x11_owner.stdout | default('') | trim) not in ['0', dg_host_uid | string]
+         if dg_sorr_host_gamescope | string | lower == 'auto'
+         else dg_sorr_host_gamescope | bool }}
+
+- name: Ensure host gamescope + flatpak for host-side gamescope
+  ansible.builtin.include_role:
+    name: check_host
+    tasks_from: host-tools.yml
+  vars:
+    host_tools: "{{ dg_host_gamescope_tools }}"
+  when: _sorr_host_gamescope | bool
+
 - name: Grant CAP_SYS_NICE to gamescope for realtime scheduling
   # gamescope --rt needs CAP_SYS_NICE to raise thread priority; without it
   # it warns ("No CAP_SYS_NICE") and runs at regular priority, adding input
@@ -32,7 +56,9 @@
   register: _sorr_setcap
   changed_when: false
   failed_when: false
-  when: dg_sorr_use_gamescope | bool
+  when:
+    - dg_sorr_use_gamescope | bool
+    - not (_sorr_host_gamescope | bool)
 
 - name: Install SORR AUR runtime packages inside box
   # Tolerate a transient AUR build failure and report genuinely-missing

@@ -55,8 +55,11 @@ dg_sorr_gamescope_opts: "-W 3840 -H 2160 -f --immediate-flips --rt"
 # gamescope session started on the HOST. Needs gamescope on the host; when
 # launched from inside the box (ES-DE) it goes through distrobox-host-exec,
 # which needs the host's flatpak session helper. Falls back to the in-box
-# path when the host can't be reached. Disable dg_sorr_use_gamescope with it.
-dg_sorr_host_gamescope: false
+# path when the host can't be reached (plain-windowed). "auto" (default) turns
+# it on when the box's /tmp/.X11-unix isn't owned by root or the box user —
+# the condition that breaks in-box gamescope — and installs the host tools
+# (dg_host_gamescope_tools). true/false force it.
+dg_sorr_host_gamescope: auto
 dg_sorr_host_gamescope_opts: "-W 3840 -H 2160 -S integer -f"
 
 # Fallback only (gamescope disabled/missing): a Wine virtual desktop this

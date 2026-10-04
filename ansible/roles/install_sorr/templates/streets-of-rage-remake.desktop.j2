@@ -3,7 +3,7 @@
 Name=Streets of Rage Remake (on {{ dg_box_name }})
 {# Host gamescope: start the launcher on the host so it can run gamescope
    there and enter the box inside it (no distrobox-host-exec needed). #}
-{% if dg_sorr_host_gamescope | bool %}
+{% if _sorr_host_gamescope | bool %}
 Exec={{ dg_box_home }}/bin/sorr-launch
 {% else %}
 Exec=/usr/bin/distrobox-enter -n {{ dg_box_name }} -- {{ dg_box_home }}/bin/sorr-launch

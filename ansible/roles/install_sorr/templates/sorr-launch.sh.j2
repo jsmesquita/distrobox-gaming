@@ -120,7 +120,7 @@ run_in_host_gamescope() {
 case "${1:-}" in
   status) status; exit 0 ;;
   *)
-    if [ -n "${DG_SORR_HOST_GAMESCOPE-{{ dg_sorr_host_gamescope | ternary('1', '') }}}" ] &&
+    if [ -n "${DG_SORR_HOST_GAMESCOPE-{{ _sorr_host_gamescope | bool | ternary('1', '') }}}" ] &&
        [ -z "${DG_SORR_IN_HOST_GAMESCOPE:-}" ]; then
       set +e
       run_in_host_gamescope
@@ -128,6 +128,8 @@ case "${1:-}" in
       set -e
       [ "$rc" -ne 127 ] && exit "$rc"
       printf '%s\n' 'sorr-launch: host gamescope unavailable, launching in the box' >&2
+      # In-box gamescope / the virtual desktop are what host mode replaces.
+      export DG_SORR_GAMESCOPE="" DG_SORR_DESKTOP_RES=""
     fi
     run_with_exit_chord; exit $? ;;
 esac
