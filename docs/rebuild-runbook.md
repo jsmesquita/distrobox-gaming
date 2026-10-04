@@ -52,42 +52,49 @@ Use this when recreating the gaming distrobox from scratch.
 ### Non-Arch hosts (e.g. Ubuntu)
 
 The box is always Arch, but several roles run tools on the **host**, and the
-defaults assume an Arch host. A from-scratch rebuild on Ubuntu 26.04 needed:
+upstream defaults assumed an Arch host. `check_host` / `create_box` now handle
+the differences automatically; a from-scratch rebuild on Ubuntu 26.04 only
+needs the first `site.yml` run with `-K`, **in a real terminal** (Ansible
+refuses non-blocking stdio, *"Ansible requires blocking IO"*, so it can't run
+through tool shells such as Claude Code's `!` prefix).
 
-1. **Host packages.** The opt-in game roles extract archives on the host
-   (`bsdtar` for `.rar`, `7z` for `.7z`, plus patch / installer tools):
+What is automatic, and how to override it:
+
+1. **Host packages** (`dg_host_tools` in `group_vars/all/host.yml`): the
+   roles extract archives on the host (`bsdtar` for `.rar`, `7z` for `.7z`,
+   plus patch / installer tools). `check_host` installs the missing ones with
+   apt (Debian/Ubuntu) or pacman (Arch), which is why the first run needs
+   `-K`; elsewhere it warns. Set `dg_host_tools_install: false` to only warn.
+   On Ubuntu that is:
 
    ```sh
    sudo apt install libarchive-tools 7zip unrar xdelta3 innoextract cabextract
    ```
 
 2. **sudo-rs.** Ubuntu's default `sudo` is sudo-rs, whose password prompt
-   Ansible can't detect: the one `become` task (`create_box`, Steam library
-   root) times out with *"Timed out waiting for become success or become
-   password prompt"*. Point Ansible at the classic binary in
-   `host_vars/localhost.yml`:
+   Ansible can't detect (become times out with *"Timed out waiting for become
+   success or become password prompt"*). `check_host` detects it and uses the
+   classic `sudo.ws` binary for the run. Setting `ansible_become_exe` in
+   `host_vars/localhost.yml` disables the detection.
 
-   ```yaml
-   ansible_become_exe: sudo.ws
-   ```
-
-3. **Run the first `site.yml` with `-K`, in a real terminal.** Ansible
-   refuses non-blocking stdio (*"Ansible requires blocking IO"*), so it can't
-   run through tool shells such as Claude Code's `!` prefix. Later runs can
-   skip the sudo step with `--skip-tags create`, since the box already exists.
+3. **No `-K` on re-runs.** `create_box` only uses sudo for the Steam library
+   root when it must (creating it under a non-writable parent, or chowning
+   someone else's dir), so once the host is set up, `site.yml` runs without
+   `-K`.
 
 4. **gamescope inside the box doesn't start** under rootless podman: the box
    sees `/tmp/.X11-unix` owned by `nobody`, so gamescope fails with *"Failed
-   to create Xwayland server"*. Games that rely on it can run gamescope on the
-   host instead (`apt install gamescope`). For ES-DE, which runs inside the
-   box, that also needs `distrobox-host-exec`, i.e. the host's flatpak session
-   helper (`apt install flatpak`). SORR supports this via
-   `dg_sorr_host_gamescope`; see `docs/streets-of-rage-remake.md`.
+   to create Xwayland server"*. SORR detects this
+   (`dg_sorr_host_gamescope: auto`), runs gamescope on the host instead and
+   installs `gamescope` + `flatpak` there (`dg_host_gamescope_tools`; flatpak
+   provides the session helper `distrobox-host-exec` needs for ES-DE). Size
+   it to your panel with `dg_sorr_host_gamescope_opts`. See
+   `docs/streets-of-rage-remake.md`.
 
 5. **NVIDIA lib32 libraries.** Arch only archives the driver versions it
    shipped, so on other distros `bootstrap_packages` falls back to the official
    NVIDIA `.run` installer for the host's exact driver version (see
-   `docs/distrobox-gaming-packages.md`). This needs no action.
+   `docs/distrobox-gaming-packages.md`).
 
 Missing BIOS dumps, PS4 firmware and the shadPS4 test game only produce
 warnings in `check_host` / `verify`, so an empty library still verifies.
