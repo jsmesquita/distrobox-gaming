@@ -99,7 +99,35 @@ status() {
   ls /dev/input/js* 2>/dev/null || printf '%s\n' 'no /dev/input/js controller visible (wake the pad before launching)'
 }
 
+run_in_host_gamescope() {
+  # Re-enter this launcher inside a gamescope session on the HOST, with the
+  # in-box gamescope / virtual desktop off. A login shell puts the host's
+  # gamescope on PATH (Ubuntu installs it to /usr/games). Returns 127 when
+  # the host can't be reached, so the caller can fall back.
+  inner="env DG_SORR_IN_HOST_GAMESCOPE=1 DG_SORR_GAMESCOPE= DG_SORR_DESKTOP_RES= $0"
+  opts="${DG_SORR_HOST_GAMESCOPE_OPTS-{{ dg_sorr_host_gamescope_opts }}}"
+  cmd="exec gamescope $opts -- distrobox-enter -n {{ dg_box_name }} -- $inner"
+  if [ -n "${CONTAINER_ID:-}" ]; then
+    command -v distrobox-host-exec >/dev/null 2>&1 || return 127
+    # host-spawn runs in the caller's cwd, and box-only paths (/run/host/...)
+    # don't exist on the host — the spawn then fails with 127.
+    (cd / && distrobox-host-exec sh -lc "$cmd")
+  else
+    sh -lc "$cmd"
+  fi
+}
+
 case "${1:-}" in
   status) status; exit 0 ;;
-  *) run_with_exit_chord; exit $? ;;
+  *)
+    if [ -n "${DG_SORR_HOST_GAMESCOPE-{{ dg_sorr_host_gamescope | ternary('1', '') }}}" ] &&
+       [ -z "${DG_SORR_IN_HOST_GAMESCOPE:-}" ]; then
+      set +e
+      run_in_host_gamescope
+      rc=$?
+      set -e
+      [ "$rc" -ne 127 ] && exit "$rc"
+      printf '%s\n' 'sorr-launch: host gamescope unavailable, launching in the box' >&2
+    fi
+    run_with_exit_chord; exit $? ;;
 esac

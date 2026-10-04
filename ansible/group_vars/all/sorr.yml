@@ -49,6 +49,16 @@ dg_sorr_winearch: win64
 dg_sorr_use_gamescope: true
 dg_sorr_gamescope_opts: "-W 3840 -H 2160 -f --immediate-flips --rt"
 
+# Host gamescope: on hosts where gamescope can't start inside the rootless
+# box (e.g. Ubuntu + podman: the box sees /tmp/.X11-unix owned by nobody, so
+# gamescope can't spawn Xwayland), the launcher re-enters itself inside a
+# gamescope session started on the HOST. Needs gamescope on the host; when
+# launched from inside the box (ES-DE) it goes through distrobox-host-exec,
+# which needs the host's flatpak session helper. Falls back to the in-box
+# path when the host can't be reached. Disable dg_sorr_use_gamescope with it.
+dg_sorr_host_gamescope: false
+dg_sorr_host_gamescope_opts: "-W 3840 -H 2160 -S integer -f"
+
 # Fallback only (gamescope disabled/missing): a Wine virtual desktop this
 # size gives SORR a "screen" to fill. Set "" to launch plain-windowed.
 dg_sorr_desktop_res: "3840x2160"

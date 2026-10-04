@@ -45,6 +45,29 @@ true fullscreen:
   disable per-launch), `dg_sorr_gamescope_opts`. Without gamescope it falls
   back to a Wine virtual desktop (`dg_sorr_desktop_res`).
 
+### Host gamescope (non-Arch hosts)
+
+On some hosts gamescope can't start **inside** the rootless box: on Ubuntu +
+podman the box sees `/tmp/.X11-unix` owned by `nobody`, so gamescope fails
+with `Failed to create Xwayland server`. The Wine virtual-desktop fallback
+showed only a blue desktop there. Instead, run gamescope on the **host**:
+
+```yaml
+# ansible/host_vars/localhost.yml
+dg_sorr_use_gamescope: false
+dg_sorr_desktop_res: ""
+dg_sorr_host_gamescope: true
+dg_sorr_host_gamescope_opts: "-W 1920 -H 1080 -S integer -f"
+```
+
+Requirements: `gamescope` installed on the host, and, for ES-DE (which runs
+inside the box), a working `distrobox-host-exec`, which needs the host's
+flatpak session helper (`apt install flatpak`). The launcher re-enters itself
+inside the host gamescope session. The desktop entry then starts the launcher
+on the host directly, while ES-DE goes through `distrobox-host-exec`. If the
+host can't be reached the launcher prints a note and starts plain-windowed in
+the box.
+
 ## Saves / controls
 - Saves + video/config live in `tools/sorr/game/savegame/` (persistent work
   dir, excluded from release rsync — survives rebuilds). **Start a fresh
