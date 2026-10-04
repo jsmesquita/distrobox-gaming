@@ -11,8 +11,32 @@
     state: directory
     mode: "0755"
 
+- name: Check the Steam library root and its parent
+  ansible.builtin.stat:
+    path: "{{ item }}"
+  loop:
+    - "{{ dg_steam_root }}"
+    - "{{ dg_steam_root | dirname }}"
+  register: _steam_root_stat
+
+# Root is only needed to create the dir under a non-writable parent or to
+# chown someone else's dir, so re-runs on a ready host need no -K.
+- name: Decide whether the Steam library root needs host sudo
+  ansible.builtin.set_fact:
+    _steam_root_needs_root: >-
+      {{ not (
+           (_steam_root_stat.results[0].stat.exists
+            and _steam_root_stat.results[0].stat.uid == dg_host_uid | int
+            and _steam_root_stat.results[0].stat.gid == dg_host_gid | int)
+           or
+           (not _steam_root_stat.results[0].stat.exists
+            and _steam_root_stat.results[1].stat.exists
+            and _steam_root_stat.results[1].stat.writeable
+            and ansible_facts.user_uid | int == dg_host_uid | int)
+         ) }}
+
 - name: Ensure Steam library root is writable by the box user
-  become: true
+  become: "{{ _steam_root_needs_root | bool }}"
   ansible.builtin.file:
     path: "{{ dg_steam_root }}"
     state: directory
