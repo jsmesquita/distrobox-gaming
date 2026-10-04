@@ -13,14 +13,24 @@
     - "{{ dg_melonds_config_dir }}"
     - "{{ dg_melonds_config_dir }}/bios"
 
+- name: Check DS BIOS/firmware in the BIOS root
+  # melonDS falls back to its built-in FreeBIOS, so absent dumps are fine.
+  ansible.builtin.stat:
+    path: "{{ dg_bios_root }}/{{ item }}"
+  loop: "{{ dg_melonds_bios_files }}"
+  register: _melonds_bios
+
 - name: Copy DS BIOS/firmware from the BIOS root (seed only if missing)
   ansible.builtin.copy:
-    src: "{{ dg_bios_root }}/{{ item }}"
-    dest: "{{ dg_melonds_config_dir }}/bios/{{ item }}"
+    src: "{{ dg_bios_root }}/{{ item.item }}"
+    dest: "{{ dg_melonds_config_dir }}/bios/{{ item.item }}"
     remote_src: true
     force: false
     mode: "0644"
-  loop: "{{ dg_melonds_bios_files }}"
+  loop: "{{ _melonds_bios.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when: item.stat.exists
 
 - name: Seed melonDS config (seed only if missing)
   ansible.builtin.template:
