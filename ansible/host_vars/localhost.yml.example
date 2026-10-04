@@ -19,6 +19,19 @@
 # or a NOPASSWD entry) the first time it runs.
 # dg_steam_root: "{{ dg_data_root }}/steam"
 #
+# Non-Arch hosts (see docs/rebuild-runbook.md "Non-Arch hosts"). Ubuntu's
+# default sudo is sudo-rs, whose prompt Ansible can't detect (become times
+# out); use the classic binary:
+# ansible_become_exe: sudo.ws
+#
+# Streets of Rage Remake where gamescope can't start inside the box (Ubuntu +
+# rootless podman): run gamescope on the host, sized to your panel. Needs host
+# gamescope (+ flatpak for ES-DE). See docs/streets-of-rage-remake.md.
+# dg_sorr_use_gamescope: false
+# dg_sorr_desktop_res: ""
+# dg_sorr_host_gamescope: true
+# dg_sorr_host_gamescope_opts: "-W 1920 -H 1080 -S integer -f"
+#
 # Roots derived from dg_emudeck_root (override individually only if
 # your layout diverges from EmuDeck's default):
 # dg_rom_root:        "{{ dg_emudeck_root }}/roms"
