@@ -37,9 +37,23 @@ PY
   fi
 }
 
+kill_prefix_procs() {
+  # wineserver -k misses Wine processes orphaned from their server, e.g. after
+  # the host gamescope session they drew into went away. Those keep the host
+  # gamescope reaper (and so ES-DE, which waits on it) alive and make the next
+  # launch attach to a dead display. Find them by WINEPREFIX instead.
+  for d in /proc/[0-9]*; do
+    [ "${d#/proc/}" = "$$" ] && continue
+    if tr '\0' '\n' < "$d/environ" 2>/dev/null | grep -qxF "WINEPREFIX=$prefix"; then
+      kill -9 "${d#/proc/}" 2>/dev/null || true
+    fi
+  done
+}
+
 run_game() {
   common_env
   focus_main_output
+  kill_prefix_procs
   export WINEPREFIX="$prefix" WINEARCH={{ dg_sorr_winearch }} WINEDEBUG="${WINEDEBUG:--all}"
   cd "$work_dir"
   use_gamescope="${DG_SORR_GAMESCOPE-{{ dg_sorr_use_gamescope | ternary('1', '') }}}"
@@ -80,6 +94,7 @@ run_with_exit_chord() {
   cleanup() {
     [ -n "$evsieve_pid" ] && kill "$evsieve_pid" 2>/dev/null || true
     WINEPREFIX="$prefix" env -u PYTHONHOME -u PYTHONPATH wineserver -k >/dev/null 2>&1 || true
+    kill_prefix_procs
   }
   trap cleanup EXIT HUP INT TERM
   set +e
