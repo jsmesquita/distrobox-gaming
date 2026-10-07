@@ -14,7 +14,7 @@ no git precisa ser levado à parte:
 |---|---|---|
 | Emuladores, cores do RetroArch, configs, ES-DE, atalhos, ícones | gerados pelo playbook | **Sim** |
 | `ansible/host_vars/localhost.yml` (caminhos, UID/GID, resolução) | no repo, mas no `.gitignore` | Não — guarde uma cópia |
-| ROMs e BIOS | `<dg_emudeck_root>/roms`, `<dg_emudeck_root>/bios` | Não |
+| ROMs e BIOS | `<dg_emudeck_root>/roms*` (quatro pastas) e `<dg_emudeck_root>/Emulation/bios` — veja [`pastas-e-roms.md`](pastas-e-roms.md) | Não |
 | Saves | dentro do box (`~/Games/distrobox/gaming`) e no backup em `<dg_external_games_root>/distrobox-gaming/backup/saves` | Não |
 | Capas/vídeos do scraper do ES-DE | `~/Games/distrobox/gaming/ES-DE/downloaded_media` | Não |
 | Jogos da Steam | biblioteca da Steam | Não — baixe de novo |
@@ -79,8 +79,10 @@ Revise o arquivo para a máquina nova:
 ### 4. Copiar ROMs, BIOS e saves
 
 Copie a biblioteca para o caminho configurado em `dg_external_games_root`
-(por exemplo `~/Games/library`), mantendo a estrutura
-`EmuDeck/roms/<sistema>/` e `EmuDeck/bios/`.
+(por exemplo `~/Games/library`), mantendo a estrutura do `EmuDeck/`
+(`roms/`, `roms_mid/`, `roms_heavy/`, `roms_rare/` e `Emulation/bios/`).
+O mais simples é copiar a pasta `EmuDeck/` inteira. A pasta de cada sistema
+está em [`pastas-e-roms.md`](pastas-e-roms.md).
 
 ### 5. Rodar o setup completo
 

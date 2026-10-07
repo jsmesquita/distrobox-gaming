@@ -32,8 +32,11 @@ Use quando precisar mexer nas opções dele, como mapear um controle.
 
 ## Adicionar jogos
 
-1. Copie a ROM para `~/Games/library/EmuDeck/roms/<sistema>/` (por exemplo
-   `mame/`, `snes/`, `ps2/`).
+1. Copie a ROM para a pasta do sistema, dentro de
+   `~/Games/library/EmuDeck/`. Cada sistema tem uma pasta fixa, dividida
+   entre `roms/`, `roms_mid/`, `roms_heavy/` e `roms_rare/` (por exemplo
+   `roms/mame/`, `roms/snes/`, `roms_heavy/ps2/`). A lista completa está em
+   [`pastas-e-roms.md`](pastas-e-roms.md).
 2. No ES-DE, atualize a lista (*Menu → Game Collection Settings → Update
    Gamelists*) ou reinicie o ES-DE.
 3. Opcional: rode o *Scraper* para baixar capas e vídeos.
