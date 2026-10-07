@@ -142,8 +142,9 @@ ausentes geram só avisos.
 
 ## Depois de instalado
 
-Não é preciso rodar nada ao ligar a máquina: os atalhos ligam o box
-sozinhos. Rode o repo só quando:
+Veja [`uso-diario.md`](uso-diario.md) para o uso no dia a dia. Resumo: não é
+preciso rodar nada ao ligar a máquina, porque os atalhos ligam o box sozinhos.
+Rode o repo só quando:
 
 | Situação | Comando |
 |---|---|
