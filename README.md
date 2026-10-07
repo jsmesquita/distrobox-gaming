@@ -494,6 +494,7 @@ Core setup & rebuild:
 - **[Sources & downloads](docs/sources.md)** — upstream repos/pages for every native port, recomp, decomp, fan game and ROM-hack tool, if you want to grab a build yourself
 - **[Save backups](docs/save-backups.md)** — mirror emulator/PC-port saves to the NAS (`backup-saves`) and restore them on a fresh remount (`restore-saves`)
 - [Rebuild Runbook](docs/rebuild-runbook.md) — from-scratch rebuild, opt-in tags, standalone playbooks
+- [Replicar a instalação](docs/replicar-instalacao.md) — guia em português, passo a passo, para levar o setup a outra máquina (o que copiar, pré-requisitos do Ubuntu, ordem dos comandos)
 - [External Installers](docs/external-installers.md) — download inventory for the opt-in Windows/Wine games and tools
 - [ogm launcher integration](docs/ogm-launcher.md) — omarchy-games-menu catalog fragment, `ogm scan` hooks
 - [Unsupported / parked games](docs/unsupported-games.md) — games/mods we couldn't get working; the detailed trail lives in GitHub issues

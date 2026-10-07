@@ -1,6 +1,8 @@
 # Rebuild Runbook
 
-Use this when recreating the gaming distrobox from scratch.
+Use this when recreating the gaming distrobox from scratch. For a
+step-by-step guide in Portuguese covering what to carry over from the old
+machine, see [`replicar-instalacao.md`](replicar-instalacao.md).
 
 ## Using Ansible (recommended)
 
