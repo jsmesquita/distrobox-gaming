@@ -70,6 +70,8 @@ dg_xemu_hdd: "{{ dg_xemu_data_dir }}/xbox_hdd.qcow2"
 
 dg_desktop_render_dir: "{{ dg_project_root }}/config/desktop/rendered"
 dg_host_applications_dir: "{{ ansible_facts.env.HOME }}/.local/share/applications"
+# Host icon theme dir for launcher icons (roles/desktop_apps/files/icons).
+dg_host_icons_dir: "{{ ansible_facts.env.HOME }}/.local/share/icons/hicolor"
 
 dg_project_root: "{{ playbook_dir | dirname }}"
 

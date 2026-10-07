@@ -171,6 +171,29 @@
   failed_when: false
   when: _dfv_check.rc == 0
 
+- name: Ensure host icon theme directories exist
+  ansible.builtin.file:
+    path: "{{ dg_host_icons_dir }}/{{ item.path }}/apps"
+    state: directory
+    mode: "0755"
+  loop: "{{ query('ansible.builtin.filetree', role_path ~ '/files/icons') | selectattr('state', 'eq', 'directory') | list }}"
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: Install launcher icons into the host icon theme
+  # Launchers reference icons by name (Icon=dolphin-emu), but those icons
+  # are installed inside the box, so a non-Arch host's app grid shows a
+  # generic placeholder. The icons are versioned in files/icons/<size>/,
+  # named after each launcher's Icon= value, and copied to the host's
+  # user hicolor theme. Add a file there when a new launcher needs one.
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ dg_host_icons_dir }}/{{ item.path | dirname }}/apps/{{ item.path | basename }}"
+    mode: "0644"
+  loop: "{{ query('ansible.builtin.filetree', role_path ~ '/files/icons') | selectattr('state', 'eq', 'file') | list }}"
+  loop_control:
+    label: "{{ item.path }}"
+
 - name: Install rendered desktop files into host applications dir
   # Runs scripts/install-host-launchers.sh, which copies each installable
   # rendered entry into dg_host_applications_dir. Entries whose target binary
