@@ -1,4 +1,8 @@
 ---
+- name: Create per-system ROM folders
+  ansible.builtin.include_tasks: rom-dirs.yml
+  when: dg_create_rom_dirs | bool
+
 # xemu BIOS/HDD symlinks
 
 - name: Create xemu config directories

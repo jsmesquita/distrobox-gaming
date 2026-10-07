@@ -24,6 +24,9 @@ dg_rom_root: "{{ dg_emudeck_root }}/roms"
 dg_rom_mid_root: "{{ dg_emudeck_root }}/roms_mid"
 dg_rom_heavy_root: "{{ dg_emudeck_root }}/roms_heavy"
 dg_rom_rare_root: "{{ dg_emudeck_root }}/roms_rare"
+# link_storage creates the empty folder of every enabled ES-DE system
+# (and bios/dc) under these roots when the root exists. false to skip.
+dg_create_rom_dirs: true
 dg_bios_root: "{{ dg_emudeck_root }}/Emulation/bios"
 
 # libretro-database cht files — user-supplied, typically cloned from

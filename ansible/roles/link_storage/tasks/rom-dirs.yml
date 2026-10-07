@@ -1,0 +1,42 @@
+---
+# Create the empty per-system ROM folders ES-DE reads (one per enabled
+# system in dg_esde_systems), plus the BIOS subfolder for NAOMI/Atomiswave
+# sets, so a fresh library shows where every system's games go. Only
+# creates empty directories — never moves or deletes anything — and only
+# when the parent (roms/, roms_mid/, ...) already exists, so an unmounted
+# NAS or external disk never gets a stray tree on its empty mountpoint.
+
+- name: Collect ROM folders of enabled ES-DE systems
+  ansible.builtin.set_fact:
+    # Same enabled filter as es_systems.xml.j2 (enabled may be a "False"
+    # string). Ports is a box-side launcher dir managed by configure_esde.
+    _dg_rom_dirs: >-
+      {%- set dirs = [] -%}
+      {%- for sys in dg_esde_systems if sys.enabled | default(true) | bool and sys.name != 'ports' -%}
+      {%- set _ = dirs.append(sys.path) -%}
+      {%- endfor -%}
+      {{ (dirs + [dg_bios_root ~ '/dc']) | unique | sort }}
+
+- name: Stat ROM folder parents
+  ansible.builtin.stat:
+    path: "{{ item | dirname }}"
+  loop: "{{ _dg_rom_dirs }}"
+  register: _dg_rom_dir_parents
+
+- name: Create missing per-system ROM folders
+  ansible.builtin.file:
+    path: "{{ item.item }}"
+    state: directory
+    mode: "0755"
+  loop: "{{ _dg_rom_dir_parents.results }}"
+  when: item.stat.exists and item.stat.isdir
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: Warn about ROM folders skipped because their parent is missing
+  ansible.builtin.debug:
+    msg: "WARNING: not creating {{ item.item }}: parent {{ item.item | dirname }} does not exist (storage not mounted?)"
+  loop: "{{ _dg_rom_dir_parents.results }}"
+  when: not (item.stat.exists and item.stat.isdir)
+  loop_control:
+    label: "{{ item.item }}"

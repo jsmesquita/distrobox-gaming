@@ -82,20 +82,15 @@ pelo seu `install-*.yml` e aparece sozinho no sistema **Ports** do ES-DE.
 
 ## Como adicionar ROMs
 
-1. **Crie a pasta do sistema**, se ainda não existir. Use exatamente o nome
-   da tabela:
+1. **Copie a ROM** para a pasta do sistema (tabela acima), num dos formatos
+   aceitos. As pastas já existem: o playbook cria a pasta vazia de cada
+   sistema ligado (veja *Criação automática das pastas*).
 
-   ```sh
-   mkdir -p ~/Games/library/EmuDeck/roms_mid/n64
-   ```
-
-2. **Copie a ROM** para a pasta, num dos formatos aceitos.
-
-3. **Atualize a lista no ES-DE**: *Menu → Game Collection Settings →
+2. **Atualize a lista no ES-DE**: *Menu → Game Collection Settings →
    Update Gamelists*, ou feche e abra o ES-DE. O sistema aparece no ES-DE
    quando a pasta dele tem pelo menos um jogo.
 
-4. **Opcional: baixe capas e vídeos** com *Menu → Scraper*.
+3. **Opcional: baixe capas e vídeos** com *Menu → Scraper*.
 
 ### Cuidados por tipo de jogo
 
@@ -144,6 +139,23 @@ de adicionar BIOS novas, para o repo criar os links.
 
 O `ansible-playbook site.yml --tags verify` avisa sobre BIOS que faltam sem
 falhar, então dá para adicionar as BIOS aos poucos.
+
+## Criação automática das pastas
+
+O role `link_storage` (parte do `site.yml` e do `--tags storage`) cria a
+pasta vazia de cada sistema ligado no `esde.yml`, mais `Emulation/bios/dc/`.
+Para criar de novo as que faltarem, por exemplo depois de ligar os Atari:
+
+```sh
+cd ~/distrobox-gaming/ansible
+ansible-playbook site.yml --tags storage
+```
+
+Ele só cria pastas vazias: nunca move nem apaga nada. Também só cria uma
+pasta se a pasta-pai (`roms/`, `roms_mid/`, ...) já existir, para não criar
+uma árvore num disco externo ou NAS que não esteja montado; nesse caso ele
+mostra um aviso. Para desligar a criação automática:
+`dg_create_rom_dirs: false` no `localhost.yml`.
 
 ## Mudar as pastas de lugar
 
