@@ -1,0 +1,35 @@
+---
+# Every RetroArch core an enabled ES-DE system launches (via
+# %CORE_RETROARCH%/<core>_libretro.so in esde.yml) must exist, otherwise
+# ES-DE fails at launch with "emulator core file ... not found".
+
+- name: Collect RetroArch cores referenced by enabled ES-DE systems
+  ansible.builtin.set_fact:
+    # Same enabled filter as es_systems.xml.j2 (enabled may be a "False" string).
+    _esde_ra_cores: >-
+      {%- set cmds = [] -%}
+      {%- for sys in dg_esde_systems if sys.enabled | default(true) | bool -%}
+      {%- for c in sys.commands -%}{%- set _ = cmds.append(c.cmd) -%}{%- endfor -%}
+      {%- endfor -%}
+      {{ cmds | map('regex_findall', '%CORE_RETROARCH%/([A-Za-z0-9_]+)_libretro\.so')
+         | flatten | unique | sort }}
+
+- name: Stat referenced RetroArch cores
+  ansible.builtin.stat:
+    path: "{{ dg_retroarch_dir }}/cores/{{ item }}_libretro.so"
+  loop: "{{ _esde_ra_cores }}"
+  register: _esde_ra_core_stat
+
+- name: Assert every referenced RetroArch core is installed
+  ansible.builtin.assert:
+    that: _esde_ra_missing | length == 0
+    fail_msg: >-
+      ES-DE systems reference RetroArch cores that are not installed in
+      {{ dg_retroarch_dir }}/cores: {{ _esde_ra_missing | join(', ') }}.
+      Add any missing name to dg_retroarch_cores and run
+      `ansible-playbook site.yml --tags retroarch`.
+    quiet: true
+  vars:
+    _esde_ra_missing: >-
+      {{ _esde_ra_core_stat.results | rejectattr('stat.exists')
+         | map(attribute='item') | list }}

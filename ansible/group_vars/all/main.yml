@@ -111,6 +111,10 @@ dg_retroarch_dir: "{{ dg_box_home }}/.config/retroarch"
 dg_retroarch_cache_dir: "{{ dg_box_home }}/cache/retroarch-downloads"
 dg_retroarch_config: "{{ dg_retroarch_dir }}/retroarch.cfg"
 dg_retroarch_buildbot: https://buildbot.libretro.com
+# Per-file get_url timeout (seconds) and retry count for buildbot downloads.
+# The mame core alone is >100 MB and the buildbot is often slow.
+dg_retroarch_download_timeout: 300
+dg_retroarch_download_retries: 5
 # RetroArch's system dir is where every libretro core looks for BIOS /
 # firmware. link_storage symlinks these out of dg_bios_root; a missing
 # source warns and is skipped, exactly like the xemu BIOS links.
@@ -219,6 +223,22 @@ dg_retroarch_cores:
   - hatari
   - vice_x64
   - atari800
+  # Cores the ES-DE systems in esde.yml launch via %CORE_RETROARCH% but that
+  # no pacman package provides — without them those entries fail with
+  # "emulator core file not found".
+  - mame
+  - genesis_plus_gx
+  - picodrive
+  - mesen
+  - snes9x
+  - mgba
+  - mupen64plus_next
+  - mednafen_psx_hw
+  - mednafen_psx
+  - pcsx2
+  - dolphin
+  - flycast
+  - ppsspp
 dg_retroarch_assets:
   - { zip: info.zip,             dir: info }
   - { zip: assets.zip,           dir: assets }

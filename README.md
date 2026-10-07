@@ -93,7 +93,6 @@ so they only run when the matching tag is explicitly passed:
 ansible-playbook site.yml --tags dlcs            # install PS3 DLCs + Switch NSPs
 ansible-playbook site.yml --tags cheats          # link Switch cheats to Eden
 ansible-playbook site.yml --tags rpcs3_configs   # per-game RPCS3 tuning
-ansible-playbook site.yml --tags retroarch       # download RA cores + assets
 ansible-playbook site.yml --tags pcsx2_textures  # PCSX2 HD texture packs + per-game settings + .pnach patches
 ansible-playbook site.yml --tags pc_racing       # prepare tested Windows PC racing games via Wine
 ansible-playbook site.yml --tags sonic_p06       # install Sonic Project '06 via system Wine
@@ -470,7 +469,7 @@ ansible/                            # Ansible playbooks and roles (primary)
     install_dlcs/                   # PS3 PKG + Switch NSP batch install
     switch_cheats/                  # symlink cheats into Eden load path
     rpcs3_per_game_configs/         # per-title RPCS3 tuning from API
-    retroarch_extras/               # 21 buildbot cores + 8 asset packs
+    retroarch_extras/               # buildbot cores + asset packs (runs by default)
     pcsx2_textures/                 # PCSX2 HD textures + per-game settings + .pnach patches
     desktop_apps/                   # .desktop entry rendering
     configure_esde/                 # ES-DE custom systems XML

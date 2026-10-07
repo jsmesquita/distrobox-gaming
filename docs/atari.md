@@ -156,7 +156,7 @@ warns and skips when not, which is why nothing here hard-fails.
 
 ```sh
 cd ansible
-ansible-playbook site.yml --tags retroarch    # opt-in: fetches the cores
+ansible-playbook site.yml --tags retroarch    # fetches the cores (also part of the default run)
 ansible-playbook site.yml --tags configure    # es_systems.xml + BIOS symlinks + wrapper
 ```
 

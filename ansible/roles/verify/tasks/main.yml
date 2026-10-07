@@ -350,6 +350,8 @@
     label: "{{ item.item.item.name }}"
   when: item is not skipped
 
+- ansible.builtin.include_tasks: retroarch-cores.yml
+
 - ansible.builtin.include_tasks: atari-st.yml
   when: dg_atari_st_enabled | bool
 

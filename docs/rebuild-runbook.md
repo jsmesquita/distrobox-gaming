@@ -190,7 +190,7 @@ bind mount are untouched.
   site.yml` skips them. Request the ones you actually use:
 
   ```sh
-  ansible-playbook site.yml --tags dlcs,cheats,rpcs3_configs,retroarch,pcsx2_textures,pc_racing,m2emulator,model1,sega_rally,prboom_rt,metal_gear_master_collection,steam_lib32_nvidia,steam_trainers,render96ex,spaghettikart,ship_of_harkinian,two_ship2harkinian,starship,sonic_p06,unleashed_recomp,smm2_levels,seven_heaven
+  ansible-playbook site.yml --tags dlcs,cheats,rpcs3_configs,pcsx2_textures,pc_racing,m2emulator,model1,sega_rally,prboom_rt,metal_gear_master_collection,steam_lib32_nvidia,steam_trainers,render96ex,spaghettikart,ship_of_harkinian,two_ship2harkinian,starship,sonic_p06,unleashed_recomp,smm2_levels,seven_heaven
   ```
 
   Only pass the tags for games/features you have assets staged for.
