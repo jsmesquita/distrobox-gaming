@@ -109,6 +109,14 @@ dg_duckstation_ini: "{{ dg_box_home }}/.config/duckstation/settings.ini"
 # wornoutwill.com "Best DuckStation Settings for PS1 Emulation"
 # (2026-03-13), pulsegeek.com texture-filtering & upscaling articles
 # (2026-03-05), DuckStation wiki.
+# DuckStation GPU load. Defaults target a 4K panel on an RTX 5090 (9x =
+# 2160 lines, 4x MSAA globally, 8x in the Gran Turismo profiles). Weak GPUs
+# must lower them per host: with too much VRAM demand DuckStation exits
+# silently at boot (ES-DE just returns to the list). A 2 GB GeForce 940MX
+# boots 4x+4xMSAA but not 6x+4xMSAA; see host_vars/localhost.yml.example.
+dg_duckstation_resolution_scale: 9
+dg_duckstation_multisamples: 4
+dg_duckstation_game_multisamples: 8
 dg_duckstation_settings:
   - { section: Main, option: ConfirmPowerOff,   value: "false" }
   - { section: Main, option: SaveStateOnExit,   value: "true" }
@@ -126,10 +134,10 @@ dg_duckstation_settings:
   # UI/HUD. Per-game inis under gamesettings/ OVERRIDE these — a global change
   # in the GUI has no effect on games with a per-game profile (GT2 has one).
   - { section: GPU, option: Renderer,            value: Vulkan }
-  - { section: GPU, option: ResolutionScale,     value: "9" }
+  - { section: GPU, option: ResolutionScale,     value: "{{ dg_duckstation_resolution_scale }}" }
   - { section: GPU, option: TextureFilter,       value: "Nearest" }
   - { section: GPU, option: SpriteTextureFilter, value: "Nearest" }
-  - { section: GPU, option: Multisamples,        value: "4" }   # 4x MSAA free on the RTX 5090
+  - { section: GPU, option: Multisamples,        value: "{{ dg_duckstation_multisamples }}" }
   - { section: GPU, option: PerSampleShading,    value: "false" }
   - { section: GPU, option: TrueColor,           value: "true" }   # 24-bit output
   - { section: GPU, option: ScaledDithering,     value: "true" }   # keep dither alongside TrueColor
@@ -215,7 +223,7 @@ dg_duckstation_per_game_settings:
       - { section: GPU, option: WidescreenHack,      value: "false" }
       # 8x MSAA + per-sample shading are free on the RTX 5090 and clean up
       # car edges + alpha-tested textures (fences, trees)
-      - { section: GPU, option: Multisamples,        value: "8" }
+      - { section: GPU, option: Multisamples,        value: "{{ dg_duckstation_game_multisamples }}" }
       - { section: GPU, option: PerSampleShading,    value: "true" }
       # TrueColor + ScaledDithering ON together: Cerbera's 2025
       # recalibration — 24-bit output but keep dithering on because
@@ -249,7 +257,7 @@ dg_duckstation_per_game_settings:
       - { section: GPU, option: PGXPCulling,            value: "true" }
       - { section: GPU, option: PGXPTextureCorrection,  value: "true" }
       - { section: GPU, option: WidescreenHack,      value: "false" }
-      - { section: GPU, option: Multisamples,        value: "8" }
+      - { section: GPU, option: Multisamples,        value: "{{ dg_duckstation_game_multisamples }}" }
       - { section: GPU, option: PerSampleShading,    value: "true" }
       - { section: GPU, option: TrueColor,           value: "true" }
       - { section: GPU, option: ScaledDithering,     value: "true" }
@@ -280,7 +288,7 @@ dg_duckstation_per_game_settings:
       - { section: GPU, option: PGXPCulling,            value: "true" }
       - { section: GPU, option: PGXPTextureCorrection,  value: "true" }
       - { section: GPU, option: WidescreenHack,      value: "true" }    # no GT1 cheat exists — use built-in
-      - { section: GPU, option: Multisamples,        value: "8" }
+      - { section: GPU, option: Multisamples,        value: "{{ dg_duckstation_game_multisamples }}" }
       - { section: GPU, option: PerSampleShading,    value: "true" }
       - { section: GPU, option: TrueColor,           value: "true" }
       - { section: GPU, option: ScaledDithering,     value: "true" }

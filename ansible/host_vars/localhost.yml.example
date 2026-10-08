@@ -33,6 +33,13 @@
 # dg_sorr_host_gamescope: auto
 # dg_sorr_host_gamescope_opts: "-W 1920 -H 1080 -S integer -f"
 #
+# DuckStation (PS1) GPU load. Defaults suit a 4K panel on a high-end GPU;
+# on a weak/low-VRAM GPU DuckStation exits silently at boot. For a 1080p
+# laptop with a 2 GB GPU (e.g. GeForce 940MX):
+# dg_duckstation_resolution_scale: 4
+# dg_duckstation_multisamples: 1
+# dg_duckstation_game_multisamples: 1
+#
 # Roots derived from dg_emudeck_root (override individually only if
 # your layout diverges from EmuDeck's default):
 # dg_rom_root:        "{{ dg_emudeck_root }}/roms"
