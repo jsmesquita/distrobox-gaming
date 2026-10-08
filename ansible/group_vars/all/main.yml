@@ -236,6 +236,7 @@ dg_retroarch_cores:
   # no pacman package provides — without them those entries fail with
   # "emulator core file not found".
   - mame
+  - mame2003
   - genesis_plus_gx
   - picodrive
   - mesen

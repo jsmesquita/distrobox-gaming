@@ -405,8 +405,14 @@ dg_esde_systems:
     fullname: Arcade (MAME)
     path: "{{ dg_emudeck_root }}/roms/mame"
     extension: ".zip .ZIP .7z .7Z"
+    # MAME 2003 (0.78) is the default because the common "MAME 2003"
+    # romsets (CPS2 sets with *.xor files and no *.key) only load there;
+    # the current MAME core reports "Required files are missing" for them.
+    # Current-MAME and FB Neo stay as per-game alternative emulators.
     commands:
+      - { label: "MAME 2003 (RetroArch)", cmd: "%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/mame2003_libretro.so %ROM%" }
       - { label: "MAME (RetroArch)", cmd: "%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/mame_libretro.so %ROM%" }
+      - { label: "FB Neo (RetroArch)", cmd: "%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/fbneo_libretro.so %ROM%" }
     platform: arcade
     theme: mame
 

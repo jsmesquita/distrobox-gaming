@@ -63,7 +63,7 @@ jogo (*Menu do jogo → Edit this game's metadata → Alternative emulator*).
 | SNK Neo Geo AES / MVS | `EmuDeck/roms/neogeo/` | .zip .7z | FB Neo (RetroArch) |
 | Capcom Play System | `EmuDeck/roms/cps/` | .zip .7z | FB Neo (RetroArch) |
 | Capcom Play System II | `EmuDeck/roms/cps2/` | .zip .7z | FB Neo (RetroArch) |
-| Arcade (MAME) | `EmuDeck/roms/mame/` | .zip .7z | MAME (RetroArch) |
+| Arcade (MAME) | `EmuDeck/roms/mame/` | .zip .7z | MAME 2003 (RetroArch); alternativos: MAME atual, FB Neo |
 | Atari 2600 (opcional) | `EmuDeck/roms/atari2600/` | .a26 .bin .rom .zip .7z | Stella (RetroArch) |
 | Atari 5200 (opcional) | `EmuDeck/roms/atari5200/` | .a52 .bin .car .rom .zip .7z | Atari800 (RetroArch) |
 | Atari 7800 ProSystem (opcional) | `EmuDeck/roms/atari7800/` | .a78 .bin .zip .7z | ProSystem (RetroArch) |
@@ -97,7 +97,11 @@ pelo seu `install-*.yml` e aparece sozinho no sistema **Ports** do ES-DE.
 - **Arcade (MAME, FB Neo, NAOMI, Sega Model):** **não descompacte**. Cada
   jogo é um `.zip` com o nome curto do romset (por exemplo `ssriders.zip`),
   e o emulador identifica o jogo por esse nome. O romset precisa ser da
-  versão que o emulador espera; para o MAME do RetroArch, um romset atual.
+  versão que o emulador espera. No sistema Arcade (MAME), o padrão é o
+  **MAME 2003** (romset 0.78, o mais comum). Para um romset atual, ou se um
+  jogo não abrir, troque o emulador só daquele jogo: no ES-DE, segure o
+  botão de opções no jogo → *Edit this game's metadata* → *Alternative
+  emulator* → *MAME (RetroArch)* ou *FB Neo (RetroArch)*.
 - **Neo Geo:** o BIOS `neogeo.zip` vai **junto com os jogos**, na pasta
   `roms/neogeo/`.
 - **Jogos de vários discos (PS1, Saturn, Sega CD, Dreamcast):** crie um
