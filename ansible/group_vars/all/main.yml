@@ -172,6 +172,11 @@ dg_retroarch_settings:
   # emulators; RetroArch's default is a window. Borderless
   # (video_windowed_fullscreen, default true) keeps alt-tab cheap.
   - { key: video_fullscreen, value: '"true"' }
+  # Cores that need uncompressed content (bsnes, genesis_plus_gx...)
+  # get zipped ROMs extracted here first. With RetroArch's empty default
+  # the extraction fails ("Failed to extract content from compressed
+  # file") and the game drops straight back to ES-DE.
+  - { key: cache_directory, value: '"~/.cache/retroarch"' }
 dg_retroarch_core_options:
   # Vitor Vilela's Super Mario World Widescreen patch is not a Mode-7-only
   # widescreen hack; it needs bsnes-hd's full-scene widescreen renderer. The
