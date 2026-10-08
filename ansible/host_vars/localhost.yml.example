@@ -115,7 +115,7 @@
 # SDL controller allow-list for the pc-racing games (comma-separated
 # 0xVID/0xPID). Add your pads' IDs (lsusb) — unlisted devices stay
 # invisible to the old games on purpose (filters phantom HID pads).
-# dg_pc_racing_gamepad_only: "0x2dc8/0x310b,0x045e/0x0b12"
+# dg_pc_racing_gamepad_only: "0x2dc8/0x310b,0x045e/0x0b12,0x045e/0x028e"
 #
 # Staging root for the pc-racing installers (CMR 2.0/2/3/04, OutRun 2006,
 # Sega Rally 2/Revo, Sonic P-06) — CD extracts / repacks you source yourself.

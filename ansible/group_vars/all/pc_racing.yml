@@ -33,7 +33,8 @@ dg_pc_racing_gamepad_device: /dev/input/js0
 # the user plays with:
 #   0x2dc8/0x310b  8BitDo Ultimate 2 Wireless (XInput mode via dongle)
 #   0x045e/0x0b12  Microsoft Xbox Series X|S pad (xone/GIP via Wireless Adapter)
-dg_pc_racing_gamepad_only: "0x2dc8/0x310b,0x045e/0x0b12"
+#   0x045e/0x028e  Microsoft Xbox 360 pad (wired; also most XInput clones)
+dg_pc_racing_gamepad_only: "0x2dc8/0x310b,0x045e/0x0b12,0x045e/0x028e"
 dg_pc_racing_sdl_hidapi: "0"
 dg_pc_racing_dinput_disabled_joysticks:
   - ZSA Technology Labs Moonlander Mark I
