@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+# dg-pad-exit-watch COMMAND — run COMMAND (through sh) whenever any connected
+# pad presses Guide, or Select+Start together. For games with no emulator
+# menu (Wine titles, native ports) this is the pad's way back to ES-DE.
+#
+# Uses evsieve hooks with exec-shell only: no grab (the game still sees the
+# pad) and no --output, so it needs no /dev/uinput access — unlike the
+# older send-key=Alt+F4 chords, which silently did nothing where uinput is
+# root-only. Runs in the foreground; launchers start it with & and kill it
+# on exit. Exits quietly when evsieve or a pad is missing.
+set -eu
+
+[ $# -eq 1 ] || { echo "usage: dg-pad-exit-watch COMMAND" >&2; exit 2; }
+command -v evsieve >/dev/null 2>&1 || exit 0
+
+inputs=""
+for node in $("$HOME/bin/dg-pad-event-nodes" 2>/dev/null); do
+  inputs="$inputs --input $node"
+done
+[ -n "$inputs" ] || exit 0
+
+# shellcheck disable=SC2086
+exec evsieve $inputs \
+  --hook btn:mode exec-shell="$1" \
+  --hook btn:select btn:start exec-shell="$1"

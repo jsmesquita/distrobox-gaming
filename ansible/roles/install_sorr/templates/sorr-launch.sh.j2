@@ -2,13 +2,15 @@
 set -eu
 
 # Streets of Rage Remake v5.2 launcher. Runs SorR.exe under Wine with the
-# shared pad policy and a Select+Start exit chord, on the main horizontal
-# monitor. Same mechanism as sega-rally-launch. Managed by install_sorr.
+# shared pad policy, on the main horizontal monitor. The pad's Guide button
+# (or Select+Start) stops the game and returns to ES-DE via
+# dg-pad-exit-watch. Managed by install_sorr.
 #
 # Usage:
 #   sorr-launch          # launch the game
 #   sorr-launch <arg>    # same (ES-DE would pass %ROM%; ignored)
 #   sorr-launch status   # print install / prefix / pad status
+#   sorr-launch stop     # stop the running game (what Guide triggers)
 
 work_dir="{{ dg_sorr_work_dir }}"
 prefix="{{ dg_sorr_prefix }}"
@@ -44,7 +46,9 @@ kill_prefix_procs() {
   # launch attach to a dead display. Find them by WINEPREFIX instead.
   for d in /proc/[0-9]*; do
     [ "${d#/proc/}" = "$$" ] && continue
-    if tr '\0' '\n' < "$d/environ" 2>/dev/null | grep -qxF "WINEPREFIX=$prefix"; then
+    # Braces so 2>/dev/null also covers the redirect: other users'
+    # /proc/<pid>/environ is unreadable and would print "Permission denied".
+    if { tr '\0' '\n' < "$d/environ"; } 2>/dev/null | grep -qxF "WINEPREFIX=$prefix"; then
       kill -9 "${d#/proc/}" 2>/dev/null || true
     fi
   done
@@ -73,28 +77,22 @@ run_game() {
   fi
 }
 
+stop_game() {
+  WINEPREFIX="$prefix" env -u PYTHONHOME -u PYTHONPATH wineserver -k >/dev/null 2>&1 || true
+  kill_prefix_procs
+}
+
 run_with_exit_chord() {
   evsieve_pid=""
-  if command -v evsieve >/dev/null 2>&1 && [ -w /dev/uinput ]; then
-    pad_inputs=""
-    for l in /dev/input/by-id/*8BitDo*Ultimate*event-joystick \
-             /dev/input/by-id/*Xbox*event-joystick \
-             /dev/input/by-id/*XBOX*event-joystick; do
-      [ -e "$l" ] && pad_inputs="$pad_inputs --input $(readlink -f "$l")"
-    done
-    if [ -n "$pad_inputs" ]; then
-      # No grab: the physical pad stays visible to the game; this only
-      # injects Alt+F4 when Select+Start are pressed together.
-      # shellcheck disable=SC2086
-      evsieve $pad_inputs --hook btn:select btn:start send-key=key:leftalt send-key=key:f4 \
-        --output name="sorr-exit-keys" key:leftalt key:f4 >/dev/null 2>&1 &
-      evsieve_pid=$!
-    fi
+  if [ -x "$HOME/bin/dg-pad-exit-watch" ]; then
+    # Guide or Select+Start on any pad stops the game. No grab and no
+    # uinput needed (the old Alt+F4 key injection required /dev/uinput).
+    "$HOME/bin/dg-pad-exit-watch" "{{ dg_box_home }}/bin/sorr-launch stop" >/dev/null 2>&1 &
+    evsieve_pid=$!
   fi
   cleanup() {
     [ -n "$evsieve_pid" ] && kill "$evsieve_pid" 2>/dev/null || true
-    WINEPREFIX="$prefix" env -u PYTHONHOME -u PYTHONPATH wineserver -k >/dev/null 2>&1 || true
-    kill_prefix_procs
+    stop_game
   }
   trap cleanup EXIT HUP INT TERM
   set +e
@@ -134,6 +132,7 @@ run_in_host_gamescope() {
 
 case "${1:-}" in
   status) status; exit 0 ;;
+  stop) stop_game; exit 0 ;;
   *)
     if [ -n "${DG_SORR_HOST_GAMESCOPE-{{ _sorr_host_gamescope | bool | ternary('1', '') }}}" ] &&
        [ -z "${DG_SORR_IN_HOST_GAMESCOPE:-}" ]; then

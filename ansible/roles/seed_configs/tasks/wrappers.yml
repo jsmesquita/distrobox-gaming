@@ -58,6 +58,15 @@
     mode: "0755"
     backup: true
 
+- name: Install dg-pad-exit-watch helper
+  # Guide / Select+Start -> run a command (e.g. stop a Wine game), via
+  # evsieve exec-shell hooks that need no /dev/uinput access.
+  ansible.builtin.copy:
+    src: wrappers/dg-pad-exit-watch
+    dest: "{{ dg_box_home }}/bin/dg-pad-exit-watch"
+    mode: "0755"
+    backup: true
+
 - name: Install melonds-launch wrapper
   # Runs melonDS with the 8BitDo left stick synthesized onto the DS
   # d-pad via an evsieve virtual pad. Falls back to a plain launch when
