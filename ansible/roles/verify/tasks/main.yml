@@ -358,3 +358,22 @@
 - name: Verification completed
   ansible.builtin.debug:
     msg: "All verification checks passed"
+
+# Gamepad identity: Dolphin/Cemu/Azahar bind dg_controller_sdl_name/guid.
+# Warn only — the pad may simply be unplugged during the run.
+- name: List gamepads as SDL sees them in the box
+  ansible.builtin.shell: "{{ dg_in_box }} python3 -I {{ dg_project_root }}/scripts/sdl-pad-ids.py"
+  register: _sdl_pads
+  changed_when: false
+  failed_when: false
+
+- name: Warn when the configured gamepad is not connected
+  ansible.builtin.debug:
+    msg: >-
+      WARNING: no connected gamepad matches dg_controller_sdl_guid
+      {{ dg_controller_sdl_guid }} ("{{ dg_controller_sdl_name }}"), so
+      Dolphin, Cemu and Azahar will not see it. Connected:
+      {{ _sdl_pads.stdout_lines | default([]) | join('; ') or 'none' }}.
+      Set both from scripts/sdl-pad-ids.py in host_vars/localhost.yml.
+  when: (dg_controller_sdl_guid ~ '\t' ~ dg_controller_sdl_name) not in (_sdl_pads.stdout_lines | default([]))
+

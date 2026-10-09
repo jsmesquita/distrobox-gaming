@@ -6,7 +6,7 @@
 #   Select + Start -> Quit azahar (azahar shortcut Ctrl+Q)
 #
 # azahar (a Citra fork) reads the gamepad via SDL and its hotkeys via
-# Qt keyboard focus. evsieve watches the real 8BitDo (no grab — azahar
+# Qt keyboard focus. evsieve watches the real pad (8BitDo or Xbox; no grab — azahar
 # keeps reading the pad itself, 3DS has native analog so no d-pad synth
 # is needed) and, on each combo, injects the F-key on a separate
 # virtual keyboard device so it reaches azahar's focused window.
@@ -24,7 +24,9 @@ set -eu
 plain() { exec /usr/bin/azahar "$@"; }
 
 pad_node=""
-for l in /dev/input/by-id/*8BitDo*Ultimate*event-joystick; do
+for l in /dev/input/by-id/*8BitDo*Ultimate*event-joystick \
+         /dev/input/by-id/*Xbox*event-joystick \
+         /dev/input/by-id/*XBOX*event-joystick; do
   [ -e "$l" ] && { pad_node=$(readlink -f "$l"); break; }
 done
 

@@ -1,0 +1,14 @@
+# The physical gamepad that emulators binding a SPECIFIC device are seeded
+# for: Dolphin (GCPad/Wiimote "Device = SDL/0/<name>"), Cemu (controller
+# profile uuid + display name) and Azahar (SDL guid). The button bindings
+# themselves use SDL's generic gamecontroller names / xpad indices, so a
+# different XInput-style pad only needs its identity here. Emulators that
+# take "the first pad" (PCSX2, DuckStation, PPSSPP, RetroArch, Flycast,
+# xemu, Supermodel) need nothing.
+#
+# Read both values from SDL inside the box with the pad connected:
+#   distrobox enter gaming -- python3 -I scripts/sdl-pad-ids.py
+# The verify role warns when no connected pad matches.
+# Defaults: 8BitDo Ultimate 2 (2dc8:310b) in XInput mode.
+dg_controller_sdl_name: "8BitDo Ultimate 2 Wireless Controller"
+dg_controller_sdl_guid: "0300f6b6c82d00000b31000014010000"

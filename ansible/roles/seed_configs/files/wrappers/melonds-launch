@@ -5,7 +5,7 @@
 #   Select + R1    -> Save state slot 1 (melonDS shortcut Shift+F1)
 #   Select + Start -> Quit             (SIGINT; melonDS ignores SIGTERM)
 #
-# evsieve watches the real 8BitDo (no grab) and, on each combo, injects
+# evsieve watches the real pad (8BitDo or Xbox; no grab) and, on each combo, injects
 # the shortcut on a separate virtual keyboard device so it reaches
 # melonDS's focused Qt window. melonDS reads the controller DIRECTLY —
 # there is no virtual pad, so controller bindings and any change made
@@ -28,7 +28,9 @@ set -eu
 plain() { exec melonDS -f "$@"; }
 
 pad_node=""
-for l in /dev/input/by-id/*8BitDo*Ultimate*event-joystick; do
+for l in /dev/input/by-id/*8BitDo*Ultimate*event-joystick \
+         /dev/input/by-id/*Xbox*event-joystick \
+         /dev/input/by-id/*XBOX*event-joystick; do
   [ -e "$l" ] && { pad_node=$(readlink -f "$l"); break; }
 done
 

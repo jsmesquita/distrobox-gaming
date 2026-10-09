@@ -85,11 +85,10 @@ dg_azahar_qt_settings:
 # modifier). Pinning here lets future re-installs reproduce the
 # mapping without manually re-clicking in the GUI.
 #
-# The SDL controller GUID is hardware-specific. Override in
-# host_vars/localhost.yml if using a different controller — easiest
-# path is: launch Azahar once, map your pad in the GUI, then
-# `grep guid ~/.config/azahar-emu/qt-config.ini` and paste here.
-dg_azahar_controller_guid: "0300f6b6c82d00000b31000014010000"
+# The SDL controller GUID is hardware-specific; it follows the shared
+# dg_controller_sdl_guid (group_vars/all/controller.yml). Override that in
+# host_vars/localhost.yml for a different pad.
+dg_azahar_controller_guid: "{{ dg_controller_sdl_guid }}"
 
 # Profile-1 ("Default") bindings, applied verbatim into the [Controls]
 # section. The literal $0/$1 in circle_pad / c_stick are Citra's

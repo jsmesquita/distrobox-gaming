@@ -21,12 +21,13 @@
     state: directory
     mode: "0755"
 
-# Captured from Cemu's GUI after mapping the user's 8BitDo Ultimate 2
-# (SDLController API, Wii U Pro Controller). Seed only if missing so
-# in-GUI remapping survives reset-configs runs.
-- name: Seed Cemu controller profile (8BitDo Ultimate 2)
-  ansible.builtin.copy:
-    src: cemu/controller0.xml
+# Captured from Cemu's GUI after mapping an 8BitDo Ultimate 2
+# (SDLController API, Wii U Pro Controller); the pad identity comes from
+# dg_controller_sdl_guid/name. Seed only if missing so in-GUI remapping
+# survives reset-configs runs.
+- name: Seed Cemu controller profile
+  ansible.builtin.template:
+    src: cemu-controller0.xml.j2
     dest: "{{ dg_box_home }}/.config/Cemu/controllerProfiles/controller0.xml"
     force: false
     mode: "0644"

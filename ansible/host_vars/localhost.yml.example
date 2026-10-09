@@ -57,6 +57,11 @@
 # dg_gamemode_enabled: true
 # dg_mangohud_enabled: true           # overlay starts hidden; Shift_R+F12
 #
+# Gamepad identity for Dolphin/Cemu/Azahar (group_vars/all/controller.yml),
+# as SDL reports it in the box. Wired Xbox 360 pad (045e:028e):
+# dg_controller_sdl_name: "Xbox 360 Controller"
+# dg_controller_sdl_guid: "030081b85e0400008e02000010010000"
+#
 # Roots derived from dg_emudeck_root (override individually only if
 # your layout diverges from EmuDeck's default):
 # dg_rom_root:        "{{ dg_emudeck_root }}/roms"

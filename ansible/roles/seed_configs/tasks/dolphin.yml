@@ -9,9 +9,9 @@
     - "{{ dg_dolphin_config_dir }}/Profiles/GCPad"
     - "{{ dg_dolphin_config_dir }}/Profiles/Wiimote"
 
-- name: Copy Dolphin controller configs
-  ansible.builtin.copy:
-    src: "dolphin/{{ item }}"
+- name: Render Dolphin controller configs
+  ansible.builtin.template:
+    src: "dolphin/{{ item }}.j2"
     dest: "{{ dg_dolphin_config_dir }}/{{ item }}"
     backup: true
     mode: "0644"

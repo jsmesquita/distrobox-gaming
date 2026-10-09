@@ -630,7 +630,8 @@ dg_emulator_commands:
   - shadps4
   # xemu verified via the install_xemu AppImage + bin/xemu wrapper
 
-# Dolphin controller config files to copy.
+# Dolphin controller config files, rendered from templates/dolphin/*.j2 with
+# the pad from dg_controller_sdl_name (group_vars/all/controller.yml).
 dg_dolphin_configs:
   - GCPadNew.ini
   - WiimoteNew.ini
