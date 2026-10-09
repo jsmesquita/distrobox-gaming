@@ -19,8 +19,16 @@ dg_controller_sdl_guid: "0300f6b6c82d00000b31000014010000"
 # Steam/Wine games and most native ports pick up extra pads on their own.
 dg_controller_players: 1
 
-# DuckStation bindings for players 2+ ("SDL-<n>/<name>" with n = player - 1).
-# Player 1 keeps DuckStation's built-in defaults.
+# DuckStation bindings for every player ("SDL-<n>/<name>", n = player - 1).
+# Same mapping as PCSX2's [Pad1]: Xbox A/B/X/Y = Cross/Circle/Square/Triangle,
+# Guide toggles analog mode.
+dg_duckstation_pad_options:
+  - { option: Type, value: AnalogController }
+  # A DualShock powers on in DIGITAL mode, where both sticks are dead until
+  # Analog (Guide) is pressed. Start in analog mode, and for digital-only
+  # games let the left stick drive the d-pad.
+  - { option: ForceAnalogOnReset, value: "true" }
+  - { option: AnalogDPadInDigitalMode, value: "true" }
 dg_duckstation_pad_bindings:
   - { option: Up, bind: DPadUp }
   - { option: Down, bind: DPadDown }

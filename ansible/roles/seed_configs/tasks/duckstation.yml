@@ -17,19 +17,22 @@
   loop_control:
     label: "[{{ item.section }}] {{ item.option }}"
 
-- name: Set DuckStation bindings for extra players
+# Every player, including 1: setup skips DuckStation's first-run wizard
+# (SetupWizardIncomplete = false), which is what would map the pad, so an
+# unseeded [Pad1] has no bindings and the game ignores the controller.
+- name: Set DuckStation controller bindings
   community.general.ini_file:
     path: "{{ dg_duckstation_ini }}"
     section: "Pad{{ item.0 }}"
     option: "{{ item.1.option }}"
     value: >-
-      {{ 'AnalogController' if item.1.option == 'Type'
+      {{ item.1.value if 'value' in item.1
          else 'SDL-' ~ (item.0 - 1) ~ '/' ~ item.1.bind }}
     backup: true
     mode: "0644"
   loop: >-
-    {{ range(2, dg_controller_players | int + 1) | list
-       | product([{'option': 'Type'}] + dg_duckstation_pad_bindings) | list }}
+    {{ range(1, dg_controller_players | int + 1) | list
+       | product(dg_duckstation_pad_options + dg_duckstation_pad_bindings) | list }}
   loop_control:
     label: "[Pad{{ item.0 }}] {{ item.1.option }}"
 
