@@ -12,3 +12,40 @@
 # Defaults: 8BitDo Ultimate 2 (2dc8:310b) in XInput mode.
 dg_controller_sdl_name: "8BitDo Ultimate 2 Wireless Controller"
 dg_controller_sdl_guid: "0300f6b6c82d00000b31000014010000"
+
+# Local multiplayer: how many identical pads (same name/guid, told apart by
+# SDL index 0, 1, ...) get bindings in Dolphin (GC + Wii), Cemu, PCSX2 and
+# DuckStation. Player 1 is whichever pad SDL enumerated first. RetroArch,
+# Steam/Wine games and most native ports pick up extra pads on their own.
+dg_controller_players: 1
+
+# DuckStation bindings for players 2+ ("SDL-<n>/<name>" with n = player - 1).
+# Player 1 keeps DuckStation's built-in defaults.
+dg_duckstation_pad_bindings:
+  - { option: Up, bind: DPadUp }
+  - { option: Down, bind: DPadDown }
+  - { option: Left, bind: DPadLeft }
+  - { option: Right, bind: DPadRight }
+  - { option: Cross, bind: A }
+  - { option: Circle, bind: B }
+  - { option: Square, bind: X }
+  - { option: Triangle, bind: Y }
+  - { option: L1, bind: LeftShoulder }
+  - { option: R1, bind: RightShoulder }
+  - { option: L2, bind: +LeftTrigger }
+  - { option: R2, bind: +RightTrigger }
+  - { option: L3, bind: LeftStick }
+  - { option: R3, bind: RightStick }
+  - { option: Select, bind: Back }
+  - { option: Start, bind: Start }
+  - { option: Analog, bind: Guide }
+  - { option: LUp, bind: -LeftY }
+  - { option: LDown, bind: +LeftY }
+  - { option: LLeft, bind: -LeftX }
+  - { option: LRight, bind: +LeftX }
+  - { option: RUp, bind: -RightY }
+  - { option: RDown, bind: +RightY }
+  - { option: RLeft, bind: -RightX }
+  - { option: RRight, bind: +RightX }
+  - { option: SmallMotor, bind: SmallMotor }
+  - { option: LargeMotor, bind: LargeMotor }

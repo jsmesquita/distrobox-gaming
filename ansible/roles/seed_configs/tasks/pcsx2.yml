@@ -16,3 +16,19 @@
   loop: "{{ dg_pcsx2_settings }}"
   loop_control:
     label: "[{{ item.section }}] {{ item.option }}"
+
+# Players 2+ reuse the [Pad1] mapping from dg_pcsx2_settings on their own
+# SDL index (SDL-1, SDL-2, ...).
+- name: Set PCSX2 bindings for extra players
+  community.general.ini_file:
+    path: "{{ dg_pcsx2_ini }}"
+    section: "Pad{{ item.0 }}"
+    option: "{{ item.1.option }}"
+    value: "{{ item.1.value | replace('SDL-0/', 'SDL-' ~ (item.0 - 1) ~ '/') }}"
+    backup: true
+    mode: "0644"
+  loop: >-
+    {{ range(2, dg_controller_players | int + 1) | list
+       | product(dg_pcsx2_settings | selectattr('section', 'equalto', 'Pad1') | list) | list }}
+  loop_control:
+    label: "[Pad{{ item.0 }}] {{ item.1.option }}"

@@ -17,6 +17,22 @@
   loop_control:
     label: "[{{ item.section }}] {{ item.option }}"
 
+- name: Set DuckStation bindings for extra players
+  community.general.ini_file:
+    path: "{{ dg_duckstation_ini }}"
+    section: "Pad{{ item.0 }}"
+    option: "{{ item.1.option }}"
+    value: >-
+      {{ 'AnalogController' if item.1.option == 'Type'
+         else 'SDL-' ~ (item.0 - 1) ~ '/' ~ item.1.bind }}
+    backup: true
+    mode: "0644"
+  loop: >-
+    {{ range(2, dg_controller_players | int + 1) | list
+       | product([{'option': 'Type'}] + dg_duckstation_pad_bindings) | list }}
+  loop_control:
+    label: "[Pad{{ item.0 }}] {{ item.1.option }}"
+
 - name: Ensure DuckStation per-game settings dir exists
   ansible.builtin.file:
     path: "{{ dg_box_home }}/.config/duckstation/gamesettings"

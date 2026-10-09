@@ -24,10 +24,14 @@
 # Captured from Cemu's GUI after mapping an 8BitDo Ultimate 2
 # (SDLController API, Wii U Pro Controller); the pad identity comes from
 # dg_controller_sdl_guid/name. Seed only if missing so in-GUI remapping
-# survives reset-configs runs.
-- name: Seed Cemu controller profile
+# survives reset-configs runs. One profile per player; Cemu tells identical
+# pads apart by the "<n>_" uuid prefix.
+- name: Seed Cemu controller profiles
   ansible.builtin.template:
-    src: cemu-controller0.xml.j2
-    dest: "{{ dg_box_home }}/.config/Cemu/controllerProfiles/controller0.xml"
+    src: cemu-controller.xml.j2
+    dest: "{{ dg_box_home }}/.config/Cemu/controllerProfiles/controller{{ cemu_pad_index }}.xml"
     force: false
     mode: "0644"
+  loop: "{{ range(dg_controller_players | int) | list }}"
+  loop_control:
+    loop_var: cemu_pad_index

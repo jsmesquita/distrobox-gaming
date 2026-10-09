@@ -16,3 +16,16 @@
     backup: true
     mode: "0644"
   loop: "{{ dg_dolphin_configs }}"
+
+# Dolphin only enables GameCube port 1 by default; plug a standard
+# controller (SIDevice 6) into the ports of the extra players. Wiimotes 2+
+# get "Source = 1" (emulated) in the WiimoteNew.ini template.
+- name: Enable Dolphin GameCube ports for extra players
+  community.general.ini_file:
+    path: "{{ dg_dolphin_config_dir }}/Dolphin.ini"
+    section: Core
+    option: "SIDevice{{ item - 1 }}"
+    value: "6"
+    backup: true
+    mode: "0644"
+  loop: "{{ range(2, dg_controller_players | int + 1) | list }}"

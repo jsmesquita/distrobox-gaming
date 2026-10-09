@@ -61,6 +61,8 @@
 # as SDL reports it in the box. Wired Xbox 360 pad (045e:028e):
 # dg_controller_sdl_name: "Xbox 360 Controller"
 # dg_controller_sdl_guid: "030081b85e0400008e02000010010000"
+# Two identical pads for local multiplayer (Dolphin, Cemu, PCSX2, DuckStation):
+# dg_controller_players: 2
 #
 # Roots derived from dg_emudeck_root (override individually only if
 # your layout diverges from EmuDeck's default):

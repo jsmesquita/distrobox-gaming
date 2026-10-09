@@ -1,5 +1,9 @@
-[GCPad1]
-Device = SDL/0/{{ dg_controller_sdl_name }}
+{# Players 1..dg_controller_players get the pad bindings on their own SDL
+   index; the remaining slots keep only a Device line (unbound). #}
+{% for p in range(1, 5) %}
+[GCPad{{ p }}]
+{% if p <= dg_controller_players | int %}
+Device = SDL/{{ p - 1 }}/{{ dg_controller_sdl_name }}
 Buttons/A = `Button A`
 Buttons/B = `Button B`
 Buttons/X = `Button X`
@@ -25,9 +29,7 @@ D-Pad/Down = `Pad S`
 D-Pad/Left = `Pad W`
 D-Pad/Right = `Pad E`
 Rumble/Motor = `Motor L` | `Motor R`
-[GCPad2]
+{% else %}
 Device = SDL/0/{{ dg_controller_sdl_name }}
-[GCPad3]
-Device = SDL/0/{{ dg_controller_sdl_name }}
-[GCPad4]
-Device = SDL/0/{{ dg_controller_sdl_name }}
+{% endif %}
+{% endfor %}
