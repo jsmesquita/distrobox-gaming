@@ -21,14 +21,23 @@ dg_nvidia_lib32_archive_base_url: "https://archive.archlinux.org/packages/l/lib3
 dg_nvidia_run_base_url: "https://download.nvidia.com/XFree86/Linux-x86_64"
 dg_nvidia_steam_runtime_ld_library_path: "{{ dg_nvidia_lib32_lib_dir }}"
 
+# Hybrid-graphics laptops (Optimus: Intel/AMD iGPU drives the panel, NVIDIA
+# renders) need PRIME render offload, or OpenGL apps silently stay on the
+# iGPU: __GLX_VENDOR_LIBRARY_NAME alone is not enough without
+# __NV_PRIME_RENDER_OFFLOAD=1. Off by default (desktop with the panel on the
+# NVIDIA card); enable per host in host_vars/localhost.yml.
+dg_nvidia_prime_offload: false
+
 # Environment variables injected into desktop entries and ES-DE commands
 # when NVIDIA is preferred. These operate at the Vulkan loader level so
 # all Vulkan apps only see the NVIDIA GPU.
 dg_gpu_env: >-
   {{
-    'env LD_LIBRARY_PATH=' + dg_nvidia_steam_runtime_ld_library_path +
-    ' VK_ICD_FILENAMES=' + dg_nvidia_icd +
-    ' __GLX_VENDOR_LIBRARY_NAME=nvidia'
+    ('env LD_LIBRARY_PATH=' + dg_nvidia_steam_runtime_ld_library_path +
+     ' VK_ICD_FILENAMES=' + dg_nvidia_icd +
+     ' __GLX_VENDOR_LIBRARY_NAME=nvidia' +
+     (' __NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only'
+      if dg_nvidia_prime_offload | bool else ''))
     if dg_nvidia_enabled else ''
   }}
 
