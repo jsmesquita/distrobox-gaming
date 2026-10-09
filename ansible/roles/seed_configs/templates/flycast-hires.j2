@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
+# window:fullscreen — flycast's own default is a 640x480 window, and
+# launches from ES-DE should open fullscreen like the other emulators.
 exec flycast \
+  -config window:fullscreen=yes \
   -config config:pvr.rend=4 \
   -config config:rend.Resolution={{ dg_flycast_resolution }} \
   -config config:rend.EmulateFramebuffer=no \
