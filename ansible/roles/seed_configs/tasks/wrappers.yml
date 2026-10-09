@@ -49,6 +49,15 @@
     mode: "0755"
     backup: true
 
+- name: Install dg-pad-event-nodes helper
+  # Lists every connected pad's evdev node (by-path; identical pads share a
+  # single by-id link) for the evsieve hotkey wrappers below.
+  ansible.builtin.copy:
+    src: wrappers/dg-pad-event-nodes
+    dest: "{{ dg_box_home }}/bin/dg-pad-event-nodes"
+    mode: "0755"
+    backup: true
+
 - name: Install melonds-launch wrapper
   # Runs melonDS with the 8BitDo left stick synthesized onto the DS
   # d-pad via an evsieve virtual pad. Falls back to a plain launch when

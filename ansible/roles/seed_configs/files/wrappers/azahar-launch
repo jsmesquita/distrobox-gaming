@@ -23,21 +23,21 @@ set -eu
 
 plain() { exec /usr/bin/azahar "$@"; }
 
-pad_node=""
-for l in /dev/input/by-id/*8BitDo*Ultimate*event-joystick \
-         /dev/input/by-id/*Xbox*event-joystick \
-         /dev/input/by-id/*XBOX*event-joystick; do
-  [ -e "$l" ] && { pad_node=$(readlink -f "$l"); break; }
+# Every connected pad, so the combos work on player 2's pad too.
+pad_inputs=""
+for node in $("$HOME/bin/dg-pad-event-nodes" 2>/dev/null); do
+  pad_inputs="$pad_inputs --input $node"
 done
 
-if [ -z "$pad_node" ] || ! command -v evsieve >/dev/null 2>&1 \
+if [ -z "$pad_inputs" ] || ! command -v evsieve >/dev/null 2>&1 \
    || [ ! -w /dev/uinput ]; then
   plain "$@"
 fi
 
 # Watch the pad (no grab) and inject F3/F2 on a keyboard device when the
 # Select+L1 / Select+R1 combos fire.
-evsieve --input "$pad_node" \
+# shellcheck disable=SC2086
+evsieve $pad_inputs \
   --hook btn:select btn:tl    send-key=key:f3 \
   --hook btn:select btn:tr    send-key=key:f2 \
   --hook btn:select btn:start send-key=key:leftctrl send-key=key:q \

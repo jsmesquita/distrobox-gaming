@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+# Print the evdev node of every connected 8BitDo / Xbox gamepad, one per
+# line, for the evsieve hotkey wrappers (azahar-, melonds-, supermodel-launch).
+#
+# Walks /dev/input/by-path, not by-id: identical pads report the same
+# serial, so they share ONE by-id link and all but the last-plugged pad
+# would be invisible. by-path is unique per USB port (usb and usbv2 aliases
+# of the same port are de-duplicated by the sort -u).
+for l in /dev/input/by-path/*-event-joystick; do
+  [ -e "$l" ] || continue
+  node=$(readlink -f "$l")
+  name=$(cat "/sys/class/input/${node##*/}/device/name" 2>/dev/null || true)
+  case "$name" in
+    *8BitDo*|*Xbox*|*X-Box*|*XBOX*) printf '%s\n' "$node" ;;
+  esac
+done | sort -u
