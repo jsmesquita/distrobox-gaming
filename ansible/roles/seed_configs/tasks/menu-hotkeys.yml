@@ -1,0 +1,16 @@
+---
+# Guide = emulator menu (dg_controller_menu_hotkeys). DuckStation and PCSX2
+# store several bindings for one hotkey as repeated keys, hence values +
+# exclusive.
+- name: Bind the pad's Guide button to the emulator menu
+  community.general.ini_file:
+    path: "{{ item.ini }}"
+    section: Hotkeys
+    option: "{{ item.option }}"
+    values: "{{ item.binds }}"
+    exclusive: true
+    backup: true
+    mode: "0644"
+  loop: "{{ dg_controller_menu_hotkeys }}"
+  loop_control:
+    label: "{{ item.ini | basename }} {{ item.option }}"

@@ -29,3 +29,15 @@
     backup: true
     mode: "0644"
   loop: "{{ range(2, dg_controller_players | int + 1) | list }}"
+
+- name: Stop Dolphin without a confirmation dialog
+  # The Guide-button Stop hotkey (Hotkeys.ini) must drop straight back to
+  # ES-DE; the default "Do you want to stop the current emulation?" dialog
+  # cannot be answered comfortably from the pad.
+  community.general.ini_file:
+    path: "{{ dg_dolphin_config_dir }}/Dolphin.ini"
+    section: Interface
+    option: ConfirmStop
+    value: "False"
+    backup: true
+    mode: "0644"

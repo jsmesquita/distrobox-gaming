@@ -1,0 +1,6 @@
+{# Dolphin has no gamepad pause menu: Guide stops emulation, which exits back
+   to ES-DE because ES-DE launches dolphin-emu -b. ConfirmStop is disabled in
+   Dolphin.ini (tasks/dolphin.yml) so no dialog blocks it. #}
+[Hotkeys]
+Device = SDL/0/{{ dg_controller_sdl_name }}
+General/Stop = `Guide`

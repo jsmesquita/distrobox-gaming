@@ -633,6 +633,7 @@ dg_emulator_commands:
 # Dolphin controller config files, rendered from templates/dolphin/*.j2 with
 # the pad from dg_controller_sdl_name (group_vars/all/controller.yml).
 dg_dolphin_configs:
+  - Hotkeys.ini
   - GCPadNew.ini
   - WiimoteNew.ini
   - Profiles/GCPad/8BitDo Ultimate 2 SDL.ini
