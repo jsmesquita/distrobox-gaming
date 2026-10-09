@@ -51,6 +51,12 @@
 # add PRIME render offload so OpenGL emulators also use the NVIDIA GPU.
 # dg_nvidia_prime_offload: true
 #
+# Per-game performance helpers on ES-DE launches (group_vars/all/performance.yml).
+# gamemode needs the daemon on the HOST (e.g. `sudo apt install gamemode`)
+# and the user in the host `gamemode` group (`sudo usermod -aG gamemode $USER`).
+# dg_gamemode_enabled: true
+# dg_mangohud_enabled: true           # overlay starts hidden; Shift_R+F12
+#
 # Roots derived from dg_emudeck_root (override individually only if
 # your layout diverges from EmuDeck's default):
 # dg_rom_root:        "{{ dg_emudeck_root }}/roms"

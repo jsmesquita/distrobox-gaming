@@ -1,0 +1,38 @@
+# Per-launch performance helpers for ES-DE game launches. Both are opt-in
+# per host (host_vars/localhost.yml); the packages are always installed.
+#
+# gamemode: `gamemoderun` preloads libgamemodeauto, which asks the HOST's
+# gamemoded (session D-Bus, shared with the box) to raise the CPU governor
+# and I/O priority while the game runs. The daemon must be installed on the
+# host (e.g. `sudo apt install gamemode`), and the user must be in the host
+# `gamemode` group (`sudo usermod -aG gamemode $USER`, then log in again):
+# its polkit rule only lets that group run the governor/split-lock helpers,
+# otherwise gamemode reports "active" but changes nothing. Without the daemon
+# the game still starts and gamemode only logs a warning.
+dg_gamemode_enabled: false
+
+# MangoHud: FPS / frametime / CPU+GPU load, temperature and throttling
+# overlay. Starts hidden; Shift_R+F12 toggles it in game.
+dg_mangohud_enabled: false
+dg_mangohud_config_dir: "{{ dg_box_home }}/.config/MangoHud"
+dg_mangohud_settings:
+  - no_display
+  - toggle_hud=Shift_R+F12
+  - fps
+  - frametime
+  - frame_timing
+  - cpu_stats
+  - cpu_temp
+  - cpu_mhz
+  - gpu_stats
+  - gpu_temp
+  - gpu_name
+  - vram
+  - ram
+  - throttling_status
+  - position=top-left
+
+# Command prefix placed after dg_gpu_env in every ES-DE launch command.
+dg_game_wrapper: >-
+  {{ ((['gamemoderun'] if dg_gamemode_enabled | bool else [])
+      + (['mangohud'] if dg_mangohud_enabled | bool else [])) | join(' ') }}

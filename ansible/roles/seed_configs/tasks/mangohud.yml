@@ -1,0 +1,17 @@
+---
+- name: Ensure MangoHud config directory exists
+  ansible.builtin.file:
+    path: "{{ dg_mangohud_config_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Write MangoHud config
+  ansible.builtin.copy:
+    dest: "{{ dg_mangohud_config_dir }}/MangoHud.conf"
+    content: |
+      # Managed by Ansible (dg_mangohud_settings) - run reset-configs.yml to restore.
+      {% for line in dg_mangohud_settings %}
+      {{ line }}
+      {% endfor %}
+    mode: "0644"
+    backup: true

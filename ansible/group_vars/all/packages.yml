@@ -35,6 +35,12 @@ dg_pacman_packages:
   - xdg-utils
   - desktop-file-utils
   - gamescope
+  # Opt-in per launch via dg_gamemode_enabled / dg_mangohud_enabled
+  # (group_vars/all/performance.yml); lib32 for 32-bit Wine games.
+  - gamemode
+  - lib32-gamemode
+  - mangohud
+  - lib32-mangohud
   - libarchive
   - fuse2
   - fuse3
