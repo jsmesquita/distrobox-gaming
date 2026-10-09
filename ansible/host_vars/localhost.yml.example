@@ -40,6 +40,13 @@
 # dg_duckstation_multisamples: 1
 # dg_duckstation_game_multisamples: 1
 #
+# The other upscaling emulators default to 4K too; same laptop:
+# dg_pcsx2_upscale_multiplier: 2      # PS2, ~1080p
+# dg_flycast_resolution: 960          # Dreamcast/NAOMI, 2x native lines
+# dg_supermodel_resolution_x: 1920    # Model 3 exclusive fullscreen mode;
+# dg_supermodel_resolution_y: 1080    #   must be a mode the panel offers
+# dg_melonds_scale_factor: 4          # DS compute renderer
+#
 # Roots derived from dg_emudeck_root (override individually only if
 # your layout diverges from EmuDeck's default):
 # dg_rom_root:        "{{ dg_emudeck_root }}/roms"

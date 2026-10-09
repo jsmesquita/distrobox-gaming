@@ -100,4 +100,4 @@ if [ -f /usr/share/vulkan/icd.d/nvidia_icd.json ]; then
 fi
 # shellcheck disable=SC2086
 env -u PYTHONHOME -u PYTHONPATH $sm_env \
-  /usr/bin/supermodel-binary "$@" -res=3840,2160 -fullscreen
+  /usr/bin/supermodel-binary "$@" -res={{ dg_supermodel_resolution_x }},{{ dg_supermodel_resolution_y }} -fullscreen

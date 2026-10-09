@@ -1,7 +1,7 @@
 ---
 - name: Install flycast-hires wrapper
-  ansible.builtin.copy:
-    src: wrappers/flycast-hires
+  ansible.builtin.template:
+    src: flycast-hires.j2
     dest: "{{ dg_box_home }}/bin/flycast-hires"
     mode: "0755"
     backup: true
@@ -11,8 +11,8 @@
   # its arguments (no ROM ever reaches the binary) and seeds config
   # paths this build doesn't read. This one seeds ~/.supermodel and
   # passes the ROM through. See the wrapper header for details.
-  ansible.builtin.copy:
-    src: wrappers/supermodel-launch
+  ansible.builtin.template:
+    src: supermodel-launch.j2
     dest: "{{ dg_box_home }}/bin/supermodel-launch"
     mode: "0755"
     backup: true
